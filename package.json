@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "seed:opl": "tsx scripts/seed-opl.ts"
+    "seed:opl": "tsx scripts/seed-opl.ts",
+    "aggregate:content": "tsx scripts/aggregate-content.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.9.0",
