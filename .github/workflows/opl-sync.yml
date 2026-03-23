@@ -1,0 +1,25 @@
+name: OpenPowerlifting Sync
+
+on:
+  schedule:
+    - cron: '0 4 * * 0' # Sunday at 4 AM UTC
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - name: Clone OPL data
+        run: |
+          git clone --depth 1 https://gitlab.com/openpowerlifting/opl-data.git opl-data
+      - name: Run sync
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          OPL_CSV_PATH: ./opl-data/build/openpowerlifting.csv
+        run: npm run seed:opl
