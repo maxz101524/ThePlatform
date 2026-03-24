@@ -21,9 +21,32 @@ export async function getLeaderboard(
     query = query.eq("federation", filters.federation);
   }
 
-  query = query
-    .order(filters.sortBy, { ascending: false, nullsFirst: false })
-    .range(filters.offset, filters.offset + filters.limit - 1);
+  query = query.order(filters.sortBy, { ascending: false, nullsFirst: false });
+
+  // When viewing across all weight classes, a lifter can appear multiple times
+  // (once per weight class). Fetch extra rows and deduplicate to show only each
+  // lifter's best result, matching how OpenPowerlifting displays rankings.
+  if (!filters.weightClass) {
+    const overfetch = (filters.offset + filters.limit) * 3;
+    query = query.range(0, overfetch - 1);
+
+    const { data, error } = await query;
+    if (error) {
+      console.error("Leaderboard query error:", error.message);
+      return [];
+    }
+
+    const seen = new Set<string>();
+    const unique = (data as LeaderboardEntry[]).filter((entry) => {
+      if (seen.has(entry.lifter_opl_name)) return false;
+      seen.add(entry.lifter_opl_name);
+      return true;
+    });
+
+    return unique.slice(filters.offset, filters.offset + filters.limit);
+  }
+
+  query = query.range(filters.offset, filters.offset + filters.limit - 1);
 
   const { data, error } = await query;
   if (error) {
