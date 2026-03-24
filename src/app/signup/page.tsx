@@ -9,6 +9,7 @@ export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
+  const [oplName, setOplName] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
 
@@ -23,7 +24,7 @@ export default function SignupPage() {
     if (data.user) {
       const { error: profileError } = await supabase
         .from("profiles")
-        .insert({ id: data.user.id, username });
+        .insert({ id: data.user.id, username, opl_name: oplName || null });
       if (profileError) { setError(profileError.message); return; }
     }
 
@@ -45,6 +46,16 @@ export default function SignupPage() {
           className="w-full rounded-md border border-border bg-bg-surface px-4 py-3 text-sm text-text-primary placeholder:text-text-muted focus:border-accent-primary focus:outline-none"
           required
         />
+        <input
+          type="text"
+          placeholder="OPL Name (optional, e.g. 'John Haack')"
+          value={oplName}
+          onChange={(e) => setOplName(e.target.value)}
+          className="w-full rounded-md border border-border bg-bg-surface px-4 py-3 text-sm text-text-primary placeholder:text-text-muted focus:border-accent-primary focus:outline-none"
+        />
+        <p className="text-xs text-text-muted -mt-2">
+          Claim your OpenPowerlifting identity to import your competition history.
+        </p>
         <input
           type="email"
           placeholder="Email"
