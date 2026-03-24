@@ -1,19 +1,9 @@
 import { LeaderboardEntry } from "@/lib/types";
 import { TagChip } from "@/components/ui/chip";
+import { isRecent, formatDate } from "./utils";
 
 interface PodiumProps {
   entries: LeaderboardEntry[];
-}
-
-function isRecent(meetDate: string): boolean {
-  const sixMonthsAgo = new Date();
-  sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
-  return new Date(meetDate) >= sixMonthsAgo;
-}
-
-function formatDate(dateStr: string): string {
-  const d = new Date(dateStr);
-  return d.toLocaleDateString("en-US", { month: "short", year: "numeric" });
 }
 
 const RANK_COLORS = {
@@ -97,12 +87,13 @@ export function Podium({ entries }: PodiumProps) {
   const [first, second, third] = entries;
 
   return (
-    <div className="grid grid-cols-1 gap-px md:grid-cols-3">
-      {/* Mobile: 1st on top, then 2nd, then 3rd */}
+    <div className="grid grid-cols-2 gap-px md:grid-cols-3">
+      {/* Mobile: #1 full width on top, #2/#3 side by side below */}
+      {/* Desktop: 2nd - 1st - 3rd podium arrangement */}
       <div className="order-2 md:order-1">
         <PodiumCard entry={second} rank={2} isCenter={false} />
       </div>
-      <div className="order-1 md:order-2">
+      <div className="col-span-2 order-1 md:col-span-1 md:order-2">
         <PodiumCard entry={first} rank={1} isCenter={true} />
       </div>
       <div className="order-3">

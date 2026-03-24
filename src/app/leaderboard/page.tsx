@@ -19,15 +19,15 @@ export default async function LeaderboardPage({ searchParams }: Props) {
   const [entries, weightClasses] = await Promise.all([
     getLeaderboard({
       sex,
-      federation: params.fed !== "All" ? params.fed : undefined,
-      equipment: params.equip !== "All" ? params.equip : undefined,
-      weightClass: params.class !== "All" ? params.class : undefined,
+      federation: params.fed && params.fed !== "All" ? params.fed : undefined,
+      equipment: params.equip && params.equip !== "All" ? params.equip : undefined,
+      weightClass: params.class && params.class !== "All" ? params.class : undefined,
       tested: testedParam === "true" ? true : testedParam === "false" ? false : undefined,
       sortBy: sortBy as "total" | "dots" | "wilks" | "best_squat" | "best_bench" | "best_deadlift",
       limit: 50,
       offset,
     }),
-    getWeightClasses(sex, params.equip !== "All" ? params.equip : undefined),
+    getWeightClasses(sex, params.equip && params.equip !== "All" ? params.equip : undefined),
   ]);
 
   // Split entries: top 3 go to podium (only on first page), rest go to table
@@ -62,7 +62,7 @@ export default async function LeaderboardPage({ searchParams }: Props) {
       {entries.length === 50 && (
         <div className="flex justify-center">
           <a
-            href={`/leaderboard?${new URLSearchParams({ ...params as Record<string, string>, offset: String(offset + 50) }).toString()}`}
+            href={`/leaderboard?${new URLSearchParams({ ...Object.fromEntries(Object.entries(params).filter(([, v]) => v !== undefined)) as Record<string, string>, offset: String(offset + 50) }).toString()}`}
             className="border border-border px-6 py-2 font-heading text-sm uppercase tracking-wider text-text-muted hover:border-text-muted hover:text-text-primary transition-colors"
           >
             Load More

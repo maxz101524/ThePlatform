@@ -1,21 +1,11 @@
 import { LeaderboardEntry } from "@/lib/types";
 import { TagChip } from "@/components/ui/chip";
+import { isRecent, formatDate } from "./utils";
 
 interface LeaderboardTableProps {
   entries: LeaderboardEntry[];
   sortBy: string;
   startRank: number;
-}
-
-function isRecent(meetDate: string): boolean {
-  const sixMonthsAgo = new Date();
-  sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
-  return new Date(meetDate) >= sixMonthsAgo;
-}
-
-function formatDate(dateStr: string): string {
-  const d = new Date(dateStr);
-  return d.toLocaleDateString("en-US", { month: "short", year: "numeric" });
 }
 
 export function LeaderboardTable({ entries, sortBy, startRank }: LeaderboardTableProps) {
