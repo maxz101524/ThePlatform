@@ -1,36 +1,68 @@
 import { createClient } from "@/lib/supabase/server";
-import { LeaderboardFilters, LeaderboardEntry } from "@/lib/types";
+import type { LeaderboardEntry, LeaderboardFilters } from "@/lib/types";
 
-export async function getLeaderboard(filters: LeaderboardFilters): Promise<LeaderboardEntry[]> {
+export async function getLeaderboard(
+  filters: LeaderboardFilters
+): Promise<LeaderboardEntry[]> {
   const supabase = await createClient();
 
-  const { data, error } = await supabase.rpc("get_leaderboard", {
-    p_sex: filters.sex,
-    p_equipment: filters.equipment || null,
-    p_federation: filters.federation || null,
-    p_weight_class: filters.weightClass || null,
-    p_year_from: filters.yearFrom || null,
-    p_year_to: filters.yearTo || null,
-    p_sort_by: filters.sortBy,
-    p_limit: filters.limit,
-    p_offset: filters.offset,
+  let query = supabase
+    .from("leaderboard_entries")
+    .select("*")
+    .eq("sex", filters.sex);
+
+  if (filters.equipment) {
+    query = query.eq("equipment", filters.equipment);
+  }
+  if (filters.weightClass) {
+    query = query.eq("weight_class_kg", filters.weightClass);
+  }
+  if (filters.federation) {
+    query = query.eq("federation", filters.federation);
+  }
+
+  query = query
+    .order(filters.sortBy, { ascending: false, nullsFirst: false })
+    .range(filters.offset, filters.offset + filters.limit - 1);
+
+  const { data, error } = await query;
+  if (error) {
+    console.error("Leaderboard query error:", error.message);
+    return [];
+  }
+  return (data as LeaderboardEntry[]) || [];
+}
+
+export async function getWeightClasses(
+  sex: string,
+  equipment?: string
+): Promise<string[]> {
+  const supabase = await createClient();
+  let query = supabase
+    .from("leaderboard_entries")
+    .select("weight_class_kg")
+    .eq("sex", sex);
+
+  if (equipment) query = query.eq("equipment", equipment);
+
+  const { data } = await query;
+  if (!data) return [];
+
+  const unique = [...new Set(data.map((d) => d.weight_class_kg))];
+  return unique.sort((a, b) => {
+    const na = parseFloat(a);
+    const nb = parseFloat(b);
+    if (isNaN(na) || isNaN(nb)) return a.localeCompare(b);
+    return na - nb;
   });
+}
 
-  if (error) throw new Error(`Leaderboard query failed: ${error.message}`);
+export async function getFederations(): Promise<string[]> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("leaderboard_entries")
+    .select("federation");
 
-  return (data || []).map((row: Record<string, unknown>, i: number) => ({
-    rank: filters.offset + i + 1,
-    lifter_id: row.lifter_id as string,
-    lifter_name: row.lifter_name as string,
-    lifter_slug: encodeURIComponent((row.lifter_opl_name as string).toLowerCase().replace(/ /g, "-")),
-    bodyweight_kg: row.bodyweight_kg as number | null,
-    best_squat: row.best_squat as number | null,
-    best_bench: row.best_bench as number | null,
-    best_deadlift: row.best_deadlift as number | null,
-    total: row.total as number | null,
-    dots: row.dots as number | null,
-    equipment: row.equipment as string,
-    meet_date: row.meet_date as string,
-    meet_name: row.meet_name as string,
-  }));
+  if (!data) return [];
+  return [...new Set(data.map((d) => d.federation))].sort();
 }
