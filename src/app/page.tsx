@@ -1,39 +1,46 @@
-import Link from "next/link";
-import { getUpcomingMeets, getRecentMeets, getAggregatedContent, getPosts } from "@/lib/queries/feed";
+import { getPosts, getAggregatedContent, getRecentNotableResults } from "@/lib/queries/feed";
 import { PostCard } from "@/components/content/post-card";
 import { AggregatedContentCard } from "@/components/content/aggregated-content-card";
 import { Card } from "@/components/ui/card";
+import type { Post, AggregatedContent, LeaderboardEntry } from "@/lib/types";
 
 export default async function FeedPage() {
-  const [upcomingMeets, recentMeets, content, posts] = await Promise.all([
-    getUpcomingMeets(5),
-    getRecentMeets(5),
-    getAggregatedContent(10),
-    getPosts(10),
-  ]);
+  let notableResults: LeaderboardEntry[] = [];
+  let content: AggregatedContent[] = [];
+  let posts: Post[] = [];
+
+  try {
+    [notableResults, content, posts] = await Promise.all([
+      getRecentNotableResults(5),
+      getAggregatedContent(10),
+      getPosts(10),
+    ]);
+  } catch {
+    // Supabase not configured yet — render empty feed
+  }
 
   // Interleave posts and content for the feed
-  const feedItems: Array<{ type: "post" | "content"; data: (typeof posts)[0] | (typeof content)[0]; date: string }> = [
-    ...posts.map((p) => ({ type: "post" as const, data: p, date: p.createdAt })),
-    ...content.map((c) => ({ type: "content" as const, data: c, date: c.publishedAt })),
+  const feedItems: Array<{ type: "post" | "content"; data: Post | AggregatedContent; date: string }> = [
+    ...posts.map((p) => ({ type: "post" as const, data: p, date: p.created_at })),
+    ...content.map((c) => ({ type: "content" as const, data: c, date: c.published_at })),
   ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-[240px_1fr_280px]">
-      {/* Left column — Dispatches */}
+      {/* Left column — Notable Results */}
       <aside className="hidden lg:block space-y-4">
         <h2 className="font-heading text-sm uppercase tracking-wider text-accent-primary">
-          Dispatches
+          Notable Results
         </h2>
-        {recentMeets.map((meet) => (
-          <div key={meet.id} className="border-b border-border pb-3">
-            <p className="text-xs text-text-muted">{meet.federation} · {meet.date}</p>
-            <Link
-              href={`/meet/${meet.slug}`}
-              className="text-sm font-bold text-text-primary hover:text-accent-primary transition-colors"
-            >
-              Results: {meet.name}
-            </Link>
+        {notableResults.map((entry) => (
+          <div key={entry.id} className="border-b border-border pb-3">
+            <p className="text-xs text-text-muted">{entry.federation} · {entry.meet_date}</p>
+            <p className="text-sm font-bold text-text-primary">
+              {entry.lifter_name}
+            </p>
+            <p className="text-xs text-accent-secondary font-mono">
+              {entry.total}kg total · {entry.equipment} · {entry.weight_class_kg}kg
+            </p>
           </div>
         ))}
       </aside>
@@ -48,42 +55,43 @@ export default async function FeedPage() {
           feedItems.map((item) =>
             item.type === "post" ? (
               <PostCard
-                key={`post-${(item.data as (typeof posts)[0]).id}`}
-                {...(item.data as (typeof posts)[0])}
+                key={`post-${(item.data as Post).id}`}
+                username={(item.data as Post).profiles.username}
+                bodyText={(item.data as Post).body_text}
+                linkUrl={(item.data as Post).link_url}
+                linkPreview={(item.data as Post).link_preview}
+                voteCount={(item.data as Post).vote_count}
+                commentCount={(item.data as Post).comment_count}
+                createdAt={(item.data as Post).created_at}
               />
             ) : (
               <AggregatedContentCard
-                key={`content-${(item.data as (typeof content)[0]).id}`}
-                {...(item.data as (typeof content)[0])}
+                key={`content-${(item.data as AggregatedContent).id}`}
+                {...(item.data as AggregatedContent)}
               />
             )
           )
         )}
       </div>
 
-      {/* Right column — Upcoming Meets */}
+      {/* Right column — Trending / Suggestions */}
       <aside className="hidden lg:block space-y-4">
         <h2 className="font-heading text-sm uppercase tracking-wider text-text-primary">
-          Upcoming Meets
+          Trending Content
         </h2>
-        {upcomingMeets.map((meet) => (
-          <Card key={meet.id} className="p-3 space-y-1">
-            <Link
-              href={`/meet/${meet.slug}`}
-              className="text-sm font-bold text-text-primary hover:text-accent-primary transition-colors"
+        {content.slice(0, 3).map((c) => (
+          <Card key={c.id} className="p-3 space-y-1">
+            <a
+              href={c.source_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm font-bold text-text-primary hover:text-accent-primary transition-colors line-clamp-2"
             >
-              {meet.name}
-            </Link>
-            <p className="text-xs text-text-muted">{meet.federation}</p>
-            <p className="text-xs text-text-muted">{meet.location}</p>
-            <p className="text-xs text-accent-primary">{meet.date}</p>
+              {c.title}
+            </a>
+            <p className="text-xs text-text-muted">{c.content_sources.creator_name}</p>
           </Card>
         ))}
-        {upcomingMeets.length > 0 && (
-          <Link href="/meets" className="text-xs text-accent-primary hover:underline">
-            View Full Calendar
-          </Link>
-        )}
       </aside>
     </div>
   );

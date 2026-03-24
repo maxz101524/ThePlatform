@@ -1,20 +1,12 @@
 import { Card } from "@/components/ui/card";
+import type { AggregatedContent } from "@/lib/types";
 
-interface AggregatedContentCardProps {
-  title: string;
-  creatorName: string;
-  platform: string;
-  sourceUrl: string;
-  thumbnailUrl?: string | null;
-  publishedAt: string;
-}
-
-export function AggregatedContentCard({ title, creatorName, platform, sourceUrl, thumbnailUrl }: AggregatedContentCardProps) {
+export function AggregatedContentCard({ title, content_sources, platform, source_url, thumbnail_url }: AggregatedContent) {
   return (
     <Card className="overflow-hidden p-0">
-      {thumbnailUrl && (
-        <a href={sourceUrl} target="_blank" rel="noopener noreferrer">
-          <img src={thumbnailUrl} alt={title} className="aspect-video w-full object-cover" />
+      {thumbnail_url && (
+        <a href={source_url} target="_blank" rel="noopener noreferrer">
+          <img src={thumbnail_url} alt={title} className="aspect-video w-full object-cover" />
         </a>
       )}
       <div className="p-4 space-y-2">
@@ -23,10 +15,10 @@ export function AggregatedContentCard({ title, creatorName, platform, sourceUrl,
             {platform}
           </span>
           <span>·</span>
-          <span>{creatorName}</span>
+          <span>{content_sources.creator_name}</span>
         </div>
         <a
-          href={sourceUrl}
+          href={source_url}
           target="_blank"
           rel="noopener noreferrer"
           className="block font-bold text-text-primary hover:text-accent-primary transition-colors"
