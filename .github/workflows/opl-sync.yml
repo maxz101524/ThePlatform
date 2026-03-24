@@ -1,8 +1,8 @@
-name: OpenPowerlifting Sync
+name: Weekly OPL Sync
 
 on:
   schedule:
-    - cron: '0 4 * * 0' # Sunday at 4 AM UTC
+    - cron: '0 4 * * 0'  # Sunday 4 AM UTC
   workflow_dispatch:
 
 jobs:
@@ -10,16 +10,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: '20'
+
       - run: npm ci
-      - name: Clone OPL data
+
+      - name: Download OPL data
         run: |
-          git clone --depth 1 https://gitlab.com/openpowerlifting/opl-data.git opl-data
-      - name: Run sync
+          curl -L -o /tmp/opl.zip "https://openpowerlifting.gitlab.io/opl-csv/files/openpowerlifting-latest.zip"
+          unzip /tmp/opl.zip -d /tmp/opl-data
+          OPL_FILE=$(find /tmp/opl-data -name "*.csv" | head -1)
+          echo "OPL_CSV_PATH=$OPL_FILE" >> $GITHUB_ENV
+
+      - name: Seed leaderboard
+        run: npm run seed:leaderboard
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-          OPL_CSV_PATH: ./opl-data/build/openpowerlifting.csv
-        run: npm run seed:opl
+          OPL_CSV_PATH: ${{ env.OPL_CSV_PATH }}
