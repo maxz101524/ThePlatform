@@ -42,6 +42,7 @@ interface OplRow {
   ParentFederation: string;
   Date: string;
   MeetName: string;
+  Tested: string;
 }
 
 const VALID_SEX = new Set(["M", "F", "Mx"]);
@@ -93,6 +94,7 @@ interface LeaderboardCandidate {
   meet_name: string;
   meet_date: string;
   federation: string;
+  tested: boolean;
 }
 
 /** A per-bucket ranked list that keeps the top N entries by a given metric. */
@@ -209,6 +211,7 @@ async function seed() {
       meet_name: row.MeetName,
       meet_date: row.Date,
       federation: row.ParentFederation || row.Federation,
+      tested: row.Tested === "Yes",
     };
 
     // Insert into total-ranked bucket
