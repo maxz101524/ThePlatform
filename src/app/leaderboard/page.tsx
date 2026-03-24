@@ -40,7 +40,7 @@ export default async function LeaderboardPage({ searchParams }: Props) {
       </Suspense>
 
       <Suspense fallback={<TableSkeleton rows={20} />}>
-        <LeaderboardTable entries={entries} sortBy={sortBy} />
+        <LeaderboardTable entries={entries} sortBy={sortBy} startRank={offset} />
       </Suspense>
 
       {entries.length === 50 && (
