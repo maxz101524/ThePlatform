@@ -1,9 +1,10 @@
 import { notFound } from "next/navigation";
-import { getProfileByUsername, getUserResults, getUserPosts } from "@/lib/queries/profile";
+import { getProfileByUsername, getUserResults, getUserPosts, getProfileMedia } from "@/lib/queries/profile";
 import { isFollowing } from "@/lib/queries/follow";
 import { getUser } from "@/lib/auth";
 import { ProfileHeader } from "@/components/profile/profile-header";
 import { StatsBar } from "@/components/profile/stats-bar";
+import { MediaShowcase } from "@/components/profile/media-showcase";
 import { CompetitionHistory } from "@/components/profile/competition-history";
 import { PostCard } from "@/components/content/post-card";
 
@@ -16,9 +17,10 @@ export default async function ProfilePage({ params }: Props) {
   const profile = await getProfileByUsername(username);
   if (!profile) notFound();
 
-  const [results, posts, currentUser] = await Promise.all([
+  const [results, posts, media, currentUser] = await Promise.all([
     getUserResults(profile.id),
     getUserPosts(profile.id),
+    getProfileMedia(profile.id),
     getUser(),
   ]);
 
@@ -38,6 +40,9 @@ export default async function ProfilePage({ params }: Props) {
 
       {/* Stats */}
       <StatsBar profile={profile} />
+
+      {/* Media */}
+      <MediaShowcase media={media} isOwnProfile={isOwnProfile} />
 
       {/* Competition History */}
       <div>

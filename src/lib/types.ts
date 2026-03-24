@@ -72,6 +72,17 @@ export interface UserResult {
   place: string | null;
 }
 
+// Profile media
+export interface ProfileMedia {
+  id: string;
+  profile_id: string;
+  url: string;
+  platform: string;
+  title: string | null;
+  sort_order: number;
+  created_at: string;
+}
+
 // Feed
 export interface Post {
   id: string;
