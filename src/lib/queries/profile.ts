@@ -37,7 +37,7 @@ export async function getUserPosts(
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("posts")
-    .select("*, profiles(username, avatar_url, display_name)")
+    .select("*, profiles!posts_user_id_fkey(username, avatar_url, display_name)")
     .eq("user_id", profileId)
     .order("created_at", { ascending: false })
     .range(offset, offset + limit - 1);

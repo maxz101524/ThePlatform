@@ -8,11 +8,14 @@ export async function getPosts(
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("posts")
-    .select("*, profiles(username, avatar_url, display_name)")
+    .select("*, profiles!posts_user_id_fkey(username, avatar_url, display_name)")
     .order("created_at", { ascending: false })
     .range(offset, offset + limit - 1);
 
-  if (error) return [];
+  if (error) {
+    console.error("[getPosts]", error.message, error.details);
+    return [];
+  }
   return (data as Post[]) || [];
 }
 
@@ -35,7 +38,7 @@ export async function getFollowedPosts(
 
   const { data, error } = await supabase
     .from("posts")
-    .select("*, profiles(username, avatar_url, display_name)")
+    .select("*, profiles!posts_user_id_fkey(username, avatar_url, display_name)")
     .in("user_id", followedIds)
     .order("created_at", { ascending: false })
     .range(offset, offset + limit - 1);
@@ -54,7 +57,10 @@ export async function getAggregatedContent(
     .order("published_at", { ascending: false })
     .limit(limit);
 
-  if (error) return [];
+  if (error) {
+    console.error("[getAggregatedContent]", error.message, error.details);
+    return [];
+  }
   return (data as AggregatedContent[]) || [];
 }
 
@@ -68,6 +74,9 @@ export async function getRecentNotableResults(
     .order("meet_date", { ascending: false })
     .limit(limit);
 
-  if (error) return [];
+  if (error) {
+    console.error("[getRecentNotableResults]", error.message, error.details);
+    return [];
+  }
   return (data as LeaderboardEntry[]) || [];
 }

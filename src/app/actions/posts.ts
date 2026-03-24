@@ -3,10 +3,10 @@
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 
-export async function createPost(formData: FormData) {
+export async function createPost(_prevState: { error: string | null }, formData: FormData) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) throw new Error("Must be logged in");
+  if (!user) return { error: "Must be logged in" };
 
   const bodyText = formData.get("body_text") as string;
   const linkUrl = formData.get("link_url") as string | null;
@@ -25,8 +25,9 @@ export async function createPost(formData: FormData) {
     tag: tag || null,
   });
 
-  if (error) throw new Error(error.message);
+  if (error) return { error: error.message };
   revalidatePath("/");
+  return { error: null };
 }
 
 async function fetchLinkPreview(url: string) {
