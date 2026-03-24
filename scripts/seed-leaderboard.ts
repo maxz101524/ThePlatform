@@ -1,6 +1,11 @@
 /**
  * Seed leaderboard_entries from OpenPowerlifting CSV.
- * For each (sex, equipment, weight_class), keeps the top 200 lifters by total.
+ *
+ * For each (sex, equipment, weight_class) bucket, keeps the top 200 lifters
+ * by total AND the top 200 by DOTS. Per lifter per bucket, stores their
+ * best-by-total and best-by-DOTS results (may be different meets). This
+ * ensures accurate rankings regardless of which column the user sorts by,
+ * matching how openpowerlifting.org handles rankings.
  */
 import { createClient } from "@supabase/supabase-js";
 import { parse } from "csv-parse";
@@ -57,7 +62,6 @@ function inferWeightClass(bw: number, sex: string): string {
   for (const wc of classes) {
     if (bw <= wc) return String(wc);
   }
-  // Super-heavyweight
   return sex === "F" ? "84+" : "120+";
 }
 
@@ -67,7 +71,6 @@ function normalizeWeightClass(
   bodyweightKg: string
 ): string | null {
   if (raw) return raw;
-  // Infer from bodyweight when weight class is missing
   const bw = parseFloat(bodyweightKg);
   if (isNaN(bw) || bw <= 0) return null;
   return inferWeightClass(bw, sex);
@@ -92,15 +95,72 @@ interface LeaderboardCandidate {
   federation: string;
 }
 
+/** A per-bucket ranked list that keeps the top N entries by a given metric. */
+class RankedBucket {
+  private entries: LeaderboardCandidate[] = [];
+  private lifterBest = new Map<string, number>(); // lifter -> best value
+
+  constructor(
+    private maxSize: number,
+    private getValue: (c: LeaderboardCandidate) => number | null
+  ) {}
+
+  tryInsert(candidate: LeaderboardCandidate): void {
+    const value = this.getValue(candidate);
+    if (value === null || value <= 0) return;
+
+    const name = candidate.lifter_opl_name;
+    const prevBest = this.lifterBest.get(name) ?? -Infinity;
+    if (value <= prevBest) return;
+
+    this.lifterBest.set(name, value);
+
+    // Remove previous entry for this lifter
+    const existingIdx = this.entries.findIndex(
+      (c) => c.lifter_opl_name === name
+    );
+    if (existingIdx >= 0) {
+      this.entries.splice(existingIdx, 1);
+    }
+
+    // Insert in sorted position (descending)
+    const insertIdx = this.entries.findIndex(
+      (c) => (this.getValue(c) ?? 0) < value
+    );
+    if (insertIdx >= 0) {
+      this.entries.splice(insertIdx, 0, candidate);
+    } else {
+      this.entries.push(candidate);
+    }
+
+    if (this.entries.length > this.maxSize) {
+      const removed = this.entries.pop()!;
+      // If the removed entry's lifter no longer has an entry, clean up
+      if (
+        !this.entries.some(
+          (c) => c.lifter_opl_name === removed.lifter_opl_name
+        )
+      ) {
+        this.lifterBest.delete(removed.lifter_opl_name);
+      }
+    }
+  }
+
+  getEntries(): LeaderboardCandidate[] {
+    return this.entries;
+  }
+}
+
 async function seed() {
   console.log("=== Seeding leaderboard_entries from OPL CSV ===");
   console.log(`Reading from: ${OPL_CSV_PATH}`);
-  console.log(`Keeping top ${TOP_N} per (sex, equipment, weight_class)\n`);
+  console.log(
+    `Keeping top ${TOP_N} per (sex, equipment, weight_class) by Total AND DOTS\n`
+  );
 
-  // Map: "M|Raw|83" -> sorted array of top candidates
-  const buckets = new Map<string, LeaderboardCandidate[]>();
-  // Track best total per lifter per bucket to avoid duplicates
-  const lifterBest = new Map<string, number>(); // "oplName|bucket" -> best total
+  // Two ranked lists per bucket: one by total, one by DOTS
+  const totalBuckets = new Map<string, RankedBucket>();
+  const dotsBuckets = new Map<string, RankedBucket>();
 
   const parser = createReadStream(OPL_CSV_PATH).pipe(
     parse({ columns: true, skip_empty_lines: true })
@@ -131,12 +191,6 @@ async function seed() {
     }
 
     const bucketKey = `${row.Sex}|${row.Equipment}|${wc}`;
-    const lifterKey = `${row.Name}|${bucketKey}`;
-
-    // Only keep a lifter's best total per bucket
-    const prevBest = lifterBest.get(lifterKey) || 0;
-    if (total <= prevBest) continue;
-    lifterBest.set(lifterKey, total);
 
     const candidate: LeaderboardCandidate = {
       lifter_opl_name: row.Name,
@@ -157,59 +211,80 @@ async function seed() {
       federation: row.ParentFederation || row.Federation,
     };
 
-    if (!buckets.has(bucketKey)) {
-      buckets.set(bucketKey, []);
+    // Insert into total-ranked bucket
+    if (!totalBuckets.has(bucketKey)) {
+      totalBuckets.set(
+        bucketKey,
+        new RankedBucket(TOP_N, (c) => c.total)
+      );
     }
+    totalBuckets.get(bucketKey)!.tryInsert(candidate);
 
-    const bucket = buckets.get(bucketKey)!;
-
-    // Remove previous entry for this lifter if exists
-    const existingIdx = bucket.findIndex(
-      (c) => c.lifter_opl_name === row.Name
-    );
-    if (existingIdx >= 0) {
-      bucket.splice(existingIdx, 1);
+    // Insert into DOTS-ranked bucket
+    if (!dotsBuckets.has(bucketKey)) {
+      dotsBuckets.set(
+        bucketKey,
+        new RankedBucket(TOP_N, (c) => c.dots)
+      );
     }
-
-    // Insert in sorted position
-    const insertIdx = bucket.findIndex((c) => c.total < total);
-    if (insertIdx >= 0) {
-      bucket.splice(insertIdx, 0, candidate);
-    } else {
-      bucket.push(candidate);
-    }
-
-    // Trim to TOP_N
-    if (bucket.length > TOP_N) {
-      bucket.pop();
-    }
+    dotsBuckets.get(bucketKey)!.tryInsert(candidate);
   }
 
   console.log(`\nCSV read: ${rowCount} rows, ${skipped} skipped`);
-  console.log(`Buckets: ${buckets.size} categories\n`);
+  console.log(`Buckets: ${totalBuckets.size} categories\n`);
 
-  // Collect all entries
+  // Merge both ranked lists, deduplicating by (lifter_opl_name, meet_date, weight_class_kg)
+  const seen = new Set<string>();
   const allEntries: LeaderboardCandidate[] = [];
-  for (const [key, bucket] of buckets) {
-    allEntries.push(...bucket);
+
+  for (const [key, bucket] of totalBuckets) {
+    for (const entry of bucket.getEntries()) {
+      const dedupKey = `${entry.lifter_opl_name}|${entry.equipment}|${entry.weight_class_kg}|${entry.meet_date}`;
+      if (!seen.has(dedupKey)) {
+        seen.add(dedupKey);
+        allEntries.push(entry);
+      }
+    }
   }
-  console.log(`Total leaderboard entries: ${allEntries.length}`);
+
+  for (const [key, bucket] of dotsBuckets) {
+    for (const entry of bucket.getEntries()) {
+      const dedupKey = `${entry.lifter_opl_name}|${entry.equipment}|${entry.weight_class_kg}|${entry.meet_date}`;
+      if (!seen.has(dedupKey)) {
+        seen.add(dedupKey);
+        allEntries.push(entry);
+      }
+    }
+  }
+
+  console.log(`Total leaderboard entries (merged): ${allEntries.length}`);
 
   // Truncate and insert
   console.log("\nTruncating leaderboard_entries...");
-  await supabase.from("leaderboard_entries").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+  await supabase
+    .from("leaderboard_entries")
+    .delete()
+    .neq("id", "00000000-0000-0000-0000-000000000000");
 
   console.log("Inserting leaderboard entries...");
   let inserted = 0;
+  let errors = 0;
   for (let i = 0; i < allEntries.length; i += BATCH_SIZE) {
     const batch = allEntries.slice(i, i + BATCH_SIZE);
     const { error } = await supabase.from("leaderboard_entries").insert(batch);
     if (error) {
-      console.error(`Batch ${Math.floor(i / BATCH_SIZE)} error: ${error.message}`);
+      errors++;
+      if (errors <= 5) {
+        console.error(
+          `Batch ${Math.floor(i / BATCH_SIZE)} error: ${error.message}`
+        );
+      }
     } else {
       inserted += batch.length;
     }
   }
+  if (errors > 5)
+    console.error(`... and ${errors - 5} more batch errors`);
 
   // Update sync metadata
   await supabase.from("sync_metadata").upsert(
