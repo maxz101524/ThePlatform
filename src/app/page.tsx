@@ -1,6 +1,8 @@
 import { getPosts, getAggregatedContent, getRecentNotableResults } from "@/lib/queries/feed";
+import { getUser } from "@/lib/auth";
 import { PostCard } from "@/components/content/post-card";
 import { AggregatedContentCard } from "@/components/content/aggregated-content-card";
+import { CreatePostForm } from "@/components/content/create-post-form";
 import { Card } from "@/components/ui/card";
 import type { Post, AggregatedContent, LeaderboardEntry } from "@/lib/types";
 
@@ -9,15 +11,20 @@ export default async function FeedPage() {
   let content: AggregatedContent[] = [];
   let posts: Post[] = [];
 
-  try {
-    [notableResults, content, posts] = await Promise.all([
-      getRecentNotableResults(5),
-      getAggregatedContent(10),
-      getPosts(10),
-    ]);
-  } catch {
-    // Supabase not configured yet — render empty feed
-  }
+  const [user] = await Promise.all([
+    getUser(),
+    (async () => {
+      try {
+        [notableResults, content, posts] = await Promise.all([
+          getRecentNotableResults(5),
+          getAggregatedContent(10),
+          getPosts(10),
+        ]);
+      } catch {
+        // Supabase not configured yet — render empty feed
+      }
+    })(),
+  ]);
 
   // Interleave posts and content for the feed
   const feedItems: Array<{ type: "post" | "content"; data: Post | AggregatedContent; date: string }> = [
@@ -47,6 +54,7 @@ export default async function FeedPage() {
 
       {/* Center column — Feed */}
       <div className="space-y-4">
+        {user && <CreatePostForm />}
         {feedItems.length === 0 ? (
           <Card className="text-center py-12">
             <p className="text-text-muted">No content yet. Check back soon!</p>
