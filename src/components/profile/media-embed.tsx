@@ -62,18 +62,9 @@ export function MediaEmbed({ media }: MediaEmbedProps) {
   }
 
   if (media.platform === "instagram") {
-    const postId = getInstagramPath(media.url);
-    if (!postId) return <FallbackLink media={media} />;
-    return (
-      <div className="w-full">
-        <iframe
-          src={`https://www.instagram.com/p/${postId}/embed`}
-          title={media.title || "Instagram post"}
-          allowFullScreen
-          className="w-full min-h-[480px] border-0"
-        />
-      </div>
-    );
+    // Instagram blocks iframe embeds from most origins.
+    // Show a styled card that links out instead.
+    return <InstagramCard media={media} />;
   }
 
   if (media.platform === "tiktok") {
@@ -98,6 +89,26 @@ export function MediaEmbed({ media }: MediaEmbedProps) {
   }
 
   return <FallbackLink media={media} />;
+}
+
+function InstagramCard({ media }: { media: ProfileMedia }) {
+  const isReel = media.url.includes("/reel");
+  return (
+    <a
+      href={media.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex flex-col items-center justify-center gap-3 bg-gradient-to-b from-[#833AB4] via-[#FD1D1D] to-[#F77737] p-8 min-h-[200px] text-white hover:opacity-90 transition-opacity"
+    >
+      <span className="text-3xl">◻</span>
+      <p className="font-heading text-sm uppercase tracking-wider">
+        {isReel ? "View Reel" : "View Post"} on Instagram
+      </p>
+      {media.title && (
+        <p className="text-xs text-white/80 text-center max-w-[200px] truncate">{media.title}</p>
+      )}
+    </a>
+  );
 }
 
 function FallbackLink({ media }: { media: ProfileMedia }) {
