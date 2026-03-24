@@ -13,6 +13,13 @@
   --color-semantic-success: #4CAF50;
   --color-semantic-error: #F44336;
   --color-semantic-record: #FFB800;
+  --color-accent-tertiary: #019AD8;
+  --color-accent-bronze: #CD7F32;
+  --color-accent-silver: #C0C0C0;
+  --color-rank-gold: #FFB800;
+  --color-rank-silver: #B3B3B3;
+  --color-rank-bronze: #E8491A;
+  --color-bg-surface-elevated: #222222;
 
   --font-heading: "Barlow Condensed", sans-serif;
   --font-body: "Inter", sans-serif;
