@@ -20,6 +20,9 @@ export async function getLeaderboard(
   if (filters.federation) {
     query = query.eq("federation", filters.federation);
   }
+  if (filters.tested !== undefined) {
+    query = query.eq("tested", filters.tested);
+  }
 
   query = query.order(filters.sortBy, { ascending: false, nullsFirst: false });
 
