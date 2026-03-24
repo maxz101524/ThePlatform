@@ -5,12 +5,7 @@ import { createPost } from "@/app/actions/posts";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
-interface Props {
-  lifterId?: string;
-  meetId?: string;
-}
-
-export function CreatePostForm({ lifterId, meetId }: Props) {
+export function CreatePostForm() {
   const [expanded, setExpanded] = useState(false);
 
   if (!expanded) {
@@ -41,8 +36,6 @@ export function CreatePostForm({ lifterId, meetId }: Props) {
           placeholder="Paste a link (optional)"
           className="w-full rounded-md border border-border bg-bg-primary px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:border-accent-primary focus:outline-none"
         />
-        {lifterId && <input type="hidden" name="lifter_id" value={lifterId} />}
-        {meetId && <input type="hidden" name="meet_id" value={meetId} />}
         <div className="flex justify-end gap-2">
           <Button variant="ghost" size="sm" type="button" onClick={() => setExpanded(false)}>
             Cancel
