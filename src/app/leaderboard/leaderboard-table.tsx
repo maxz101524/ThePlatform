@@ -109,7 +109,7 @@ export function LeaderboardTable({ entries, sortBy, startRank }: LeaderboardTabl
                 </td>
 
                 {/* DOTS */}
-                <td className={`px-3 ${inTopTen ? "py-3.5" : "py-3"} text-right font-mono text-text-secondary`}>
+                <td className={`px-3 ${inTopTen ? "py-3.5" : "py-3"} text-right font-mono ${sortBy === "dots" || sortBy === "wilks" ? "text-accent-secondary" : "text-text-secondary"}`}>
                   {entry.dots?.toFixed(2) || "—"}
                 </td>
 
