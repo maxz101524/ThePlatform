@@ -1,7 +1,7 @@
 "use client";
 
 import { createClient } from "@/lib/supabase/client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
@@ -13,20 +13,26 @@ export default function SignupPage() {
   const [error, setError] = useState("");
   const router = useRouter();
 
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) router.push("/");
+    });
+  }, [router]);
+
   async function handleSignup(e: React.FormEvent) {
     e.preventDefault();
     setError("");
     const supabase = createClient();
 
-    const { data, error: signUpError } = await supabase.auth.signUp({ email, password });
+    const { error: signUpError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { username, opl_name: oplName || null },
+      },
+    });
     if (signUpError) { setError(signUpError.message); return; }
-
-    if (data.user) {
-      const { error: profileError } = await supabase
-        .from("profiles")
-        .insert({ id: data.user.id, username, opl_name: oplName || null });
-      if (profileError) { setError(profileError.message); return; }
-    }
 
     router.push("/");
     router.refresh();
