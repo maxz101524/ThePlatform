@@ -47,10 +47,29 @@ function num(val: string): number | null {
   return isNaN(n) ? null : n;
 }
 
-function normalizeWeightClass(raw: string, sex: string): string | null {
-  if (!raw) return null;
-  // Keep the raw value — the leaderboard filters on exact text match
-  return raw;
+// Standard IPF weight classes used to infer class from bodyweight
+const MALE_CLASSES = [53, 59, 66, 74, 83, 93, 105, 120];
+const FEMALE_CLASSES = [43, 47, 52, 57, 63, 69, 76, 84];
+
+function inferWeightClass(bw: number, sex: string): string {
+  const classes = sex === "F" ? FEMALE_CLASSES : MALE_CLASSES;
+  for (const wc of classes) {
+    if (bw <= wc) return String(wc);
+  }
+  // Super-heavyweight
+  return sex === "F" ? "84+" : "120+";
+}
+
+function normalizeWeightClass(
+  raw: string,
+  sex: string,
+  bodyweightKg: string
+): string | null {
+  if (raw) return raw;
+  // Infer from bodyweight when weight class is missing
+  const bw = parseFloat(bodyweightKg);
+  if (isNaN(bw) || bw <= 0) return null;
+  return inferWeightClass(bw, sex);
 }
 
 interface LeaderboardCandidate {
@@ -104,7 +123,7 @@ async function seed() {
       continue;
     }
 
-    const wc = normalizeWeightClass(row.WeightClassKg, row.Sex);
+    const wc = normalizeWeightClass(row.WeightClassKg, row.Sex, row.BodyweightKg);
     if (!wc) {
       skipped++;
       continue;
