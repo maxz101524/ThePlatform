@@ -10,8 +10,7 @@ export async function createPost(formData: FormData) {
 
   const bodyText = formData.get("body_text") as string;
   const linkUrl = formData.get("link_url") as string | null;
-  const lifterId = formData.get("lifter_id") as string | null;
-  const meetId = formData.get("meet_id") as string | null;
+  const tag = formData.get("tag") as string | null;
 
   let linkPreview = null;
   if (linkUrl) {
@@ -23,8 +22,7 @@ export async function createPost(formData: FormData) {
     body_text: bodyText,
     link_url: linkUrl || null,
     link_preview: linkPreview,
-    lifter_id: lifterId || null,
-    meet_id: meetId || null,
+    tag: tag || null,
   });
 
   if (error) throw new Error(error.message);
