@@ -1,78 +1,108 @@
+// Leaderboard
 export interface LeaderboardEntry {
-  rank: number;
-  lifter_id: string;
+  id: string;
+  lifter_opl_name: string;
   lifter_name: string;
-  lifter_slug: string;
+  sex: "M" | "F" | "Mx";
+  country: string | null;
+  equipment: "Raw" | "Wraps" | "Single-ply" | "Multi-ply";
+  weight_class_kg: string;
   bodyweight_kg: number | null;
   best_squat: number | null;
   best_bench: number | null;
   best_deadlift: number | null;
-  total: number | null;
+  total: number;
   dots: number | null;
-  equipment: string;
-  meet_date: string;
+  wilks: number | null;
   meet_name: string;
+  meet_date: string;
+  federation: string;
 }
 
 export interface LeaderboardFilters {
-  federation?: string;
-  sex: string;
-  weightClass?: string;
+  sex: "M" | "F" | "Mx";
   equipment?: string;
-  yearFrom?: number;
-  yearTo?: number;
+  weightClass?: string;
+  federation?: string;
   sortBy: "total" | "dots" | "wilks" | "best_squat" | "best_bench" | "best_deadlift";
   limit: number;
   offset: number;
 }
 
-export interface LifterProfile {
+// User profiles
+export interface UserProfile {
   id: string;
-  name: string;
-  slug: string;
-  sex: string;
-  country: string | null;
-  birth_year: number | null;
+  username: string;
+  display_name: string | null;
+  avatar_url: string | null;
+  bio: string | null;
   instagram: string | null;
-}
-
-export interface MeetSummary {
-  id: string;
-  name: string;
-  slug: string;
-  federation: string;
-  date: string;
+  opl_name: string | null;
+  sex: "M" | "F" | "Mx" | null;
   country: string | null;
-  city: string | null;
-  state: string | null;
+  weight_class_kg: string | null;
+  equipment: string | null;
+  best_squat: number | null;
+  best_bench: number | null;
+  best_deadlift: number | null;
+  best_total: number | null;
+  dots: number | null;
+  follower_count: number;
+  following_count: number;
+  created_at: string;
 }
 
-export interface CompetitionResult {
+export interface UserResult {
   id: string;
-  lifter_id: string;
-  lifter_name: string;
-  lifter_slug: string;
-  meet_id: string;
+  profile_id: string;
   meet_name: string;
-  meet_slug: string;
   meet_date: string;
-  weight_class_kg: string;
+  federation: string | null;
+  weight_class_kg: string | null;
   bodyweight_kg: number | null;
-  equipment: string;
-  squat_1: number | null;
-  squat_2: number | null;
-  squat_3: number | null;
-  bench_1: number | null;
-  bench_2: number | null;
-  bench_3: number | null;
-  deadlift_1: number | null;
-  deadlift_2: number | null;
-  deadlift_3: number | null;
+  equipment: string | null;
   best_squat: number | null;
   best_bench: number | null;
   best_deadlift: number | null;
   total: number | null;
   dots: number | null;
   wilks: number | null;
-  place: string;
+  place: string | null;
+}
+
+// Feed
+export interface Post {
+  id: string;
+  user_id: string;
+  body_text: string;
+  link_url: string | null;
+  link_preview: {
+    title?: string;
+    description?: string;
+    thumbnail?: string;
+    domain?: string;
+  } | null;
+  tag: string | null;
+  vote_count: number;
+  comment_count: number;
+  created_at: string;
+  profiles: {
+    username: string;
+    avatar_url: string | null;
+    display_name: string | null;
+  };
+}
+
+export interface AggregatedContent {
+  id: string;
+  platform: "youtube" | "instagram" | "podcast";
+  source_url: string;
+  embed_url: string;
+  title: string;
+  thumbnail_url: string | null;
+  description: string | null;
+  published_at: string;
+  content_sources: {
+    creator_name: string;
+  };
 }
