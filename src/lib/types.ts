@@ -17,6 +17,7 @@ export interface LeaderboardEntry {
   meet_name: string;
   meet_date: string;
   federation: string;
+  tested: boolean | null;
 }
 
 export interface LeaderboardFilters {
@@ -24,6 +25,7 @@ export interface LeaderboardFilters {
   equipment?: string;
   weightClass?: string;
   federation?: string;
+  tested?: boolean;
   sortBy: "total" | "dots" | "wilks" | "best_squat" | "best_bench" | "best_deadlift";
   limit: number;
   offset: number;
