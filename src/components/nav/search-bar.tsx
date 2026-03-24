@@ -19,7 +19,7 @@ export function SearchBar() {
     <form onSubmit={handleSubmit} className="relative">
       <input
         type="text"
-        placeholder="Find lifter..."
+        placeholder="Search users..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         className="h-9 w-48 rounded-md border border-border bg-bg-surface px-3 pr-8 text-sm text-text-primary placeholder:text-text-muted focus:border-accent-primary focus:outline-none focus:ring-1 focus:ring-accent-primary lg:w-64"

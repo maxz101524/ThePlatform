@@ -5,9 +5,9 @@ import { usePathname } from "next/navigation";
 import { SearchBar } from "./search-bar";
 
 const navItems = [
-  { label: "The Feed", href: "/" },
+  { label: "Feed", href: "/" },
   { label: "Leaderboard", href: "/leaderboard" },
-  { label: "Meet Hub", href: "/meets" },
+  { label: "Search", href: "/search" },
 ];
 
 export function TopNav() {

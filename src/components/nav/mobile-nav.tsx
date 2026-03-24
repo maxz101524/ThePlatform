@@ -6,8 +6,8 @@ import { usePathname } from "next/navigation";
 const navItems = [
   { label: "Feed", href: "/", icon: "◉" },
   { label: "Rankings", href: "/leaderboard", icon: "◈" },
-  { label: "Meets", href: "/meets", icon: "◎" },
   { label: "Search", href: "/search", icon: "⌕" },
+  { label: "Profile", href: "/login", icon: "◎" },
 ];
 
 export function MobileNav() {
