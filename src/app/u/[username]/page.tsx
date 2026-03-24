@@ -2,9 +2,9 @@ import { notFound } from "next/navigation";
 import { getProfileByUsername, getUserResults, getUserPosts } from "@/lib/queries/profile";
 import { isFollowing } from "@/lib/queries/follow";
 import { getUser } from "@/lib/auth";
+import { ProfileHeader } from "@/components/profile/profile-header";
 import { StatsBar } from "@/components/profile/stats-bar";
 import { CompetitionHistory } from "@/components/profile/competition-history";
-import { FollowButton } from "@/components/profile/follow-button";
 import { PostCard } from "@/components/content/post-card";
 
 interface Props {
@@ -29,44 +29,12 @@ export default async function ProfilePage({ params }: Props) {
 
   return (
     <div className="space-y-6">
-      {/* Hero */}
-      <div className="flex items-start gap-4">
-        <div className="h-20 w-20 shrink-0 rounded-full bg-bg-surface border border-border flex items-center justify-center text-2xl font-heading text-text-muted uppercase">
-          {profile.avatar_url ? (
-            <img src={profile.avatar_url} alt="" className="h-20 w-20 rounded-full object-cover" />
-          ) : (
-            profile.username[0]
-          )}
-        </div>
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-3">
-            <h1 className="font-heading text-3xl font-bold uppercase text-text-primary truncate">
-              {profile.display_name || profile.username}
-            </h1>
-            {currentUser && !isOwnProfile && (
-              <FollowButton targetId={profile.id} isFollowing={userIsFollowing} />
-            )}
-          </div>
-          <p className="text-sm text-text-muted">@{profile.username}</p>
-          {profile.bio && (
-            <p className="mt-2 text-sm text-text-secondary max-w-lg">{profile.bio}</p>
-          )}
-          <div className="mt-2 flex items-center gap-4 text-xs text-text-muted">
-            <span><strong className="text-text-primary">{profile.follower_count}</strong> followers</span>
-            <span><strong className="text-text-primary">{profile.following_count}</strong> following</span>
-            {profile.instagram && (
-              <a
-                href={`https://instagram.com/${profile.instagram}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-accent-primary hover:underline"
-              >
-                @{profile.instagram}
-              </a>
-            )}
-          </div>
-        </div>
-      </div>
+      <ProfileHeader
+        profile={profile}
+        isOwnProfile={isOwnProfile}
+        isFollowing={userIsFollowing}
+        isLoggedIn={!!currentUser}
+      />
 
       {/* Stats */}
       <StatsBar profile={profile} />
