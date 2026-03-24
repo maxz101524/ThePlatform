@@ -34,6 +34,7 @@ interface OplRow {
   Place: string;
   Country: string;
   Federation: string;
+  ParentFederation: string;
   Date: string;
   MeetName: string;
 }
@@ -153,7 +154,7 @@ async function seed() {
       wilks: num(row.Wilks),
       meet_name: row.MeetName,
       meet_date: row.Date,
-      federation: row.Federation,
+      federation: row.ParentFederation || row.Federation,
     };
 
     if (!buckets.has(bucketKey)) {
