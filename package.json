@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "seed:opl": "tsx scripts/seed-opl.ts",
+    "seed:leaderboard": "tsx scripts/seed-leaderboard.ts",
     "aggregate:content": "tsx scripts/aggregate-content.ts"
   },
   "dependencies": {
