@@ -5,6 +5,7 @@ import { PostCard } from "@/components/content/post-card";
 import { AggregatedContentCard } from "@/components/content/aggregated-content-card";
 import { CreatePostForm } from "@/components/content/create-post-form";
 import { FeedTabs } from "@/components/content/feed-tabs";
+import { Suspense } from "react";
 import { Card } from "@/components/ui/card";
 import { SuggestionsModule } from "@/components/content/suggestions-module";
 import Link from "next/link";
@@ -83,7 +84,9 @@ export default async function FeedPage({
 
       {/* Center column — Feed */}
       <div className="space-y-4">
-        <FeedTabs isLoggedIn={!!user} />
+        <Suspense fallback={null}>
+          <FeedTabs isLoggedIn={!!user} />
+        </Suspense>
         {user && <CreatePostForm />}
         {isFollowingTab && posts.length === 0 ? (
           followingCount === 0 ? (

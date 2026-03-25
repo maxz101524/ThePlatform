@@ -2,6 +2,7 @@
 
 import { Card } from "@/components/ui/card";
 import { VoteButtons } from "./vote-buttons";
+import { getTimeAgo } from "@/lib/utils";
 import Link from "next/link";
 
 interface PostCardProps {
@@ -33,10 +34,10 @@ export function PostCard({ postId, username, bodyText, linkUrl, linkPreview, vot
           href={linkUrl || "#"}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex gap-3 rounded-md border border-border p-3 transition-colors hover:border-accent-primary"
+          className="flex gap-3 border border-border p-3 transition-colors hover:border-accent-primary"
         >
           {linkPreview.thumbnail && (
-            <img src={linkPreview.thumbnail} alt="" className="h-16 w-24 rounded object-cover" />
+            <img src={linkPreview.thumbnail} alt="" className="h-16 w-24 object-cover" />
           )}
           <div className="flex-1 min-w-0">
             <p className="text-sm font-bold text-text-primary truncate">{linkPreview.title}</p>
@@ -55,12 +56,3 @@ export function PostCard({ postId, username, bodyText, linkUrl, linkPreview, vot
   );
 }
 
-function getTimeAgo(dateStr: string): string {
-  const diff = Date.now() - new Date(dateStr).getTime();
-  const mins = Math.floor(diff / 60000);
-  if (mins < 60) return `${mins}m ago`;
-  const hours = Math.floor(mins / 60);
-  if (hours < 24) return `${hours}h ago`;
-  const days = Math.floor(hours / 24);
-  return `${days}d ago`;
-}

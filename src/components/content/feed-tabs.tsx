@@ -21,7 +21,7 @@ export function FeedTabs({ isLoggedIn }: { isLoggedIn: boolean }) {
   }
 
   return (
-    <div className="flex gap-0 border-b border-border mb-4">
+    <div className="flex gap-0 bg-bg-surface mb-4">
       <button
         onClick={() => setTab("for-you")}
         className={`px-4 py-2 text-sm font-heading uppercase tracking-wider transition-colors ${
