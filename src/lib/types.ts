@@ -106,6 +106,21 @@ export interface Post {
   };
 }
 
+export interface Comment {
+  id: string;
+  post_id: string;
+  user_id: string;
+  parent_comment_id: string | null;
+  body_text: string;
+  vote_count: number;
+  created_at: string;
+  profiles: {
+    username: string;
+    avatar_url: string | null;
+    display_name: string | null;
+  };
+}
+
 export interface AggregatedContent {
   id: string;
   platform: "youtube" | "instagram" | "podcast";
