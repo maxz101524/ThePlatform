@@ -80,3 +80,15 @@ export async function getRecentNotableResults(
   }
   return (data as LeaderboardEntry[]) || [];
 }
+
+export async function getPostById(postId: string): Promise<Post | null> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("posts")
+    .select("*, profiles!posts_user_id_fkey(username, avatar_url, display_name)")
+    .eq("id", postId)
+    .single();
+
+  if (error || !data) return null;
+  return data as Post;
+}
