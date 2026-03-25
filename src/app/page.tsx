@@ -1,12 +1,20 @@
-import { getPosts, getAggregatedContent, getRecentNotableResults } from "@/lib/queries/feed";
+import { getPosts, getFollowedPosts, getAggregatedContent, getRecentNotableResults } from "@/lib/queries/feed";
 import { getUser } from "@/lib/auth";
 import { PostCard } from "@/components/content/post-card";
 import { AggregatedContentCard } from "@/components/content/aggregated-content-card";
 import { CreatePostForm } from "@/components/content/create-post-form";
+import { FeedTabs } from "@/components/content/feed-tabs";
 import { Card } from "@/components/ui/card";
 import type { Post, AggregatedContent, LeaderboardEntry } from "@/lib/types";
 
-export default async function FeedPage() {
+export default async function FeedPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ feed?: string }>;
+}) {
+  const params = await searchParams;
+  const feedMode = params.feed || "for-you";
+
   let notableResults: LeaderboardEntry[] = [];
   let content: AggregatedContent[] = [];
   let posts: Post[] = [];
@@ -15,10 +23,9 @@ export default async function FeedPage() {
     getUser(),
     (async () => {
       try {
-        [notableResults, content, posts] = await Promise.all([
+        [notableResults, content] = await Promise.all([
           getRecentNotableResults(5),
           getAggregatedContent(10),
-          getPosts(10),
         ]);
       } catch {
         // Supabase not configured yet — render empty feed
@@ -26,10 +33,23 @@ export default async function FeedPage() {
     })(),
   ]);
 
-  // Interleave posts and content for the feed
+  // Fetch posts based on feed mode
+  try {
+    if (feedMode === "following" && user) {
+      posts = await getFollowedPosts(user.id, 10);
+    } else {
+      posts = await getPosts(10);
+    }
+  } catch {
+    // Supabase not configured yet — render empty feed
+  }
+
+  // Interleave posts and content for the feed (skip aggregated content on "following" tab)
   const feedItems: Array<{ type: "post" | "content"; data: Post | AggregatedContent; date: string }> = [
     ...posts.map((p) => ({ type: "post" as const, data: p, date: p.created_at })),
-    ...content.map((c) => ({ type: "content" as const, data: c, date: c.published_at })),
+    ...(feedMode === "following"
+      ? []
+      : content.map((c) => ({ type: "content" as const, data: c, date: c.published_at }))),
   ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   return (
@@ -54,6 +74,7 @@ export default async function FeedPage() {
 
       {/* Center column — Feed */}
       <div className="space-y-4">
+        <FeedTabs isLoggedIn={!!user} />
         {user && <CreatePostForm />}
         {feedItems.length === 0 ? (
           <Card className="text-center py-12">
