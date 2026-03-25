@@ -85,6 +85,7 @@ export default async function FeedPage({
             item.type === "post" ? (
               <PostCard
                 key={`post-${(item.data as Post).id}`}
+                postId={(item.data as Post).id}
                 username={(item.data as Post).profiles.username}
                 bodyText={(item.data as Post).body_text}
                 linkUrl={(item.data as Post).link_url}

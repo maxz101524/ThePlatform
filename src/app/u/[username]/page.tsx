@@ -8,6 +8,20 @@ import { MediaShowcase } from "@/components/profile/media-showcase";
 import { CompetitionHistory } from "@/components/profile/competition-history";
 import { PostCard } from "@/components/content/post-card";
 
+export const dynamic = "force-dynamic";
+
+function postKey(
+  post: {
+    id?: string | null;
+    created_at: string;
+    body_text: string;
+    profiles: { username: string };
+  },
+  index: number,
+): string {
+  return post.id ?? `${post.profiles.username}-${post.created_at}-${post.body_text.slice(0, 24)}-${index}`;
+}
+
 interface Props {
   params: Promise<{ username: string }>;
 }
@@ -59,9 +73,10 @@ export default async function ProfilePage({ params }: Props) {
             Posts
           </h2>
           <div className="space-y-4">
-            {posts.map((post) => (
+            {posts.map((post, index) => (
               <PostCard
-                key={post.id}
+                key={postKey(post, index)}
+                postId={post.id}
                 username={post.profiles.username}
                 bodyText={post.body_text}
                 linkUrl={post.link_url}

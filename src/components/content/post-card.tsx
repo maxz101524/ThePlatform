@@ -1,6 +1,11 @@
+"use client";
+
 import { Card } from "@/components/ui/card";
+import { VoteButtons } from "./vote-buttons";
+import Link from "next/link";
 
 interface PostCardProps {
+  postId: string;
   username: string;
   bodyText: string;
   linkUrl?: string | null;
@@ -10,17 +15,19 @@ interface PostCardProps {
   createdAt: string;
 }
 
-export function PostCard({ username, bodyText, linkUrl, linkPreview, voteCount, commentCount, createdAt }: PostCardProps) {
+export function PostCard({ postId, username, bodyText, linkUrl, linkPreview, voteCount, commentCount, createdAt }: PostCardProps) {
   const timeAgo = getTimeAgo(createdAt);
 
   return (
     <Card className="space-y-3">
-      <div className="flex items-center gap-2 text-xs text-text-muted">
-        <span className="font-bold text-text-secondary">{username}</span>
-        <span>·</span>
-        <span>{timeAgo}</span>
-      </div>
-      <p className="text-sm text-text-primary">{bodyText}</p>
+      <Link href={`/post/${postId}`} className="block space-y-3">
+        <div className="flex items-center gap-2 text-xs text-text-muted">
+          <span className="font-bold text-text-secondary">{username}</span>
+          <span>·</span>
+          <span>{timeAgo}</span>
+        </div>
+        <p className="text-sm text-text-primary">{bodyText}</p>
+      </Link>
       {linkPreview && (
         <a
           href={linkUrl || "#"}
@@ -39,8 +46,10 @@ export function PostCard({ username, bodyText, linkUrl, linkPreview, voteCount, 
         </a>
       )}
       <div className="flex items-center gap-4 text-xs text-text-muted">
-        <span>▲ {voteCount}</span>
-        <span>💬 {commentCount}</span>
+        <VoteButtons postId={postId} voteCount={voteCount} />
+        <Link href={`/post/${postId}`} className="hover:text-accent-primary transition-colors">
+          💬 {commentCount}
+        </Link>
       </div>
     </Card>
   );
