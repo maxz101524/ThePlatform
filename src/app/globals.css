@@ -25,3 +25,10 @@
   --font-body: "Inter", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
 }
+
+input,
+textarea,
+select,
+button {
+  font-family: var(--font-body);
+}

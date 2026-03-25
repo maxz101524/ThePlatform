@@ -11,7 +11,22 @@ interface SuggestionsModuleProps {
 export async function SuggestionsModule({ userId, weightClass, equipment }: SuggestionsModuleProps) {
   const suggestions = await getSuggestedUsers(userId, weightClass, equipment);
 
-  if (suggestions.length === 0) return null;
+  if (suggestions.length === 0) {
+    return (
+      <div className="space-y-3">
+        <h3 className="font-heading text-sm uppercase tracking-wider text-text-secondary">
+          Who to Follow
+        </h3>
+        <p className="text-xs text-text-muted">
+          Explore the{" "}
+          <Link href="/leaderboard" className="text-accent-primary hover:underline">
+            leaderboard
+          </Link>{" "}
+          to discover top lifters. Profile linking coming soon.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-3">
