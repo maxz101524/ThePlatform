@@ -45,6 +45,15 @@ export async function getFollowing(
   return data.map((d: any) => d.profiles);
 }
 
+export async function getFollowingCount(userId: string): Promise<number> {
+  const supabase = await createClient();
+  const { count } = await supabase
+    .from("follows")
+    .select("*", { count: "exact", head: true })
+    .eq("follower_id", userId);
+  return count || 0;
+}
+
 export async function getSuggestedUsers(
   userId: string,
   weightClass?: string | null,

@@ -1,4 +1,5 @@
 import { getPosts, getFollowedPosts, getAggregatedContent, getRecentNotableResults } from "@/lib/queries/feed";
+import { getFollowingCount } from "@/lib/queries/follow";
 import { getUser } from "@/lib/auth";
 import { PostCard } from "@/components/content/post-card";
 import { AggregatedContentCard } from "@/components/content/aggregated-content-card";
@@ -6,6 +7,7 @@ import { CreatePostForm } from "@/components/content/create-post-form";
 import { FeedTabs } from "@/components/content/feed-tabs";
 import { Card } from "@/components/ui/card";
 import { SuggestionsModule } from "@/components/content/suggestions-module";
+import Link from "next/link";
 import type { Post, AggregatedContent, LeaderboardEntry } from "@/lib/types";
 
 export default async function FeedPage({
@@ -19,6 +21,7 @@ export default async function FeedPage({
   let notableResults: LeaderboardEntry[] = [];
   let content: AggregatedContent[] = [];
   let posts: Post[] = [];
+  let followingCount = 0;
 
   const [user] = await Promise.all([
     getUser(),
@@ -37,13 +40,18 @@ export default async function FeedPage({
   // Fetch posts based on feed mode
   try {
     if (feedMode === "following" && user) {
-      posts = await getFollowedPosts(user.id, 10);
+      [posts, followingCount] = await Promise.all([
+        getFollowedPosts(user.id, 10),
+        getFollowingCount(user.id),
+      ]);
     } else {
       posts = await getPosts(10);
     }
   } catch {
     // Supabase not configured yet — render empty feed
   }
+
+  const isFollowingTab = feedMode === "following";
 
   // Interleave posts and content for the feed (skip aggregated content on "following" tab)
   const feedItems: Array<{ type: "post" | "content"; data: Post | AggregatedContent; date: string }> = [
@@ -77,7 +85,37 @@ export default async function FeedPage({
       <div className="space-y-4">
         <FeedTabs isLoggedIn={!!user} />
         {user && <CreatePostForm />}
-        {feedItems.length === 0 ? (
+        {isFollowingTab && posts.length === 0 ? (
+          followingCount === 0 ? (
+            <Card className="text-center py-12 space-y-6">
+              <div className="space-y-2">
+                <p className="text-text-primary font-heading text-lg uppercase tracking-wider">
+                  Follow lifters to shape your feed
+                </p>
+                <p className="text-sm text-text-muted">
+                  Discover athletes, follow their journey, and see their posts here.
+                </p>
+              </div>
+              {user && (
+                <SuggestionsModule
+                  userId={user.id}
+                  weightClass={user.profile?.weight_class_kg}
+                  equipment={user.profile?.equipment}
+                />
+              )}
+            </Card>
+          ) : (
+            <Card className="text-center py-12">
+              <p className="text-text-muted">
+                Your lifters haven&apos;t posted yet. Check out{" "}
+                <Link href="/" className="text-accent-primary hover:underline">
+                  For You
+                </Link>{" "}
+                in the meantime.
+              </p>
+            </Card>
+          )
+        ) : feedItems.length === 0 ? (
           <Card className="text-center py-12">
             <p className="text-text-muted">No content yet. Check back soon!</p>
           </Card>
