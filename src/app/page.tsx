@@ -5,6 +5,7 @@ import { AggregatedContentCard } from "@/components/content/aggregated-content-c
 import { CreatePostForm } from "@/components/content/create-post-form";
 import { FeedTabs } from "@/components/content/feed-tabs";
 import { Card } from "@/components/ui/card";
+import { SuggestionsModule } from "@/components/content/suggestions-module";
 import type { Post, AggregatedContent, LeaderboardEntry } from "@/lib/types";
 
 export default async function FeedPage({
@@ -104,24 +105,33 @@ export default async function FeedPage({
         )}
       </div>
 
-      {/* Right column — Trending / Suggestions */}
-      <aside className="hidden lg:block space-y-4">
-        <h2 className="font-heading text-sm uppercase tracking-wider text-text-primary">
-          Trending Content
-        </h2>
-        {content.slice(0, 3).map((c) => (
-          <Card key={c.id} className="p-3 space-y-1">
-            <a
-              href={c.source_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm font-bold text-text-primary hover:text-accent-primary transition-colors line-clamp-2"
-            >
-              {c.title}
-            </a>
-            <p className="text-xs text-text-muted">{c.content_sources.creator_name}</p>
-          </Card>
-        ))}
+      {/* Right column — Suggestions + Trending */}
+      <aside className="hidden lg:block space-y-6">
+        {user && (
+          <SuggestionsModule
+            userId={user.id}
+            weightClass={user.profile?.weight_class_kg}
+            equipment={user.profile?.equipment}
+          />
+        )}
+        <div className="space-y-4">
+          <h2 className="font-heading text-sm uppercase tracking-wider text-text-primary">
+            Trending Content
+          </h2>
+          {content.slice(0, 3).map((c) => (
+            <Card key={c.id} className="p-3 space-y-1">
+              <a
+                href={c.source_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm font-bold text-text-primary hover:text-accent-primary transition-colors line-clamp-2"
+              >
+                {c.title}
+              </a>
+              <p className="text-xs text-text-muted">{c.content_sources.creator_name}</p>
+            </Card>
+          ))}
+        </div>
       </aside>
     </div>
   );

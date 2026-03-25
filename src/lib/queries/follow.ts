@@ -44,3 +44,56 @@ export async function getFollowing(
   if (!data) return [];
   return data.map((d: any) => d.profiles);
 }
+
+export async function getSuggestedUsers(
+  userId: string,
+  weightClass?: string | null,
+  equipment?: string | null,
+  limit = 5
+): Promise<{
+  id: string;
+  username: string;
+  display_name: string | null;
+  avatar_url: string | null;
+  follower_count: number;
+  weight_class_kg: string | null;
+  best_total: number | null;
+}[]> {
+  const supabase = await createClient();
+
+  // Get already-followed IDs to exclude
+  const { data: followData } = await supabase
+    .from("follows")
+    .select("following_id")
+    .eq("follower_id", userId);
+
+  const excludeIds = [userId, ...(followData?.map((f) => f.following_id) || [])];
+
+  // Try personalized first (same weight class or equipment)
+  if (weightClass || equipment) {
+    let query = supabase
+      .from("profiles")
+      .select("id, username, display_name, avatar_url, follower_count, weight_class_kg, best_total")
+      .not("id", "in", `(${excludeIds.join(",")})`)
+      .order("follower_count", { ascending: false })
+      .limit(limit);
+
+    if (weightClass) {
+      query = query.eq("weight_class_kg", weightClass);
+    }
+
+    const { data } = await query;
+
+    if (data && data.length >= 3) return data;
+  }
+
+  // Fallback: top users by follower count
+  const { data } = await supabase
+    .from("profiles")
+    .select("id, username, display_name, avatar_url, follower_count, weight_class_kg, best_total")
+    .not("id", "in", `(${excludeIds.join(",")})`)
+    .order("follower_count", { ascending: false })
+    .limit(limit);
+
+  return data || [];
+}
