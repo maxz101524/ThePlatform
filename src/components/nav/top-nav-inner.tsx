@@ -19,24 +19,21 @@ export function TopNavInner({ user }: TopNavInnerProps) {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-bg-primary/95 backdrop-blur">
-      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4">
+    <header className="sticky top-4 z-50 w-[95%] mx-auto rounded-full bg-white/5 backdrop-blur-[24px] border border-white/15 shadow-2xl shadow-black/50">
+      <div className="flex h-14 items-center justify-between px-8">
         <div className="flex items-center gap-8">
-          <Link href="/" className="flex items-center gap-2">
-            <span className="text-accent-primary text-lg">⏣</span>
-            <span className="font-heading text-lg font-bold uppercase text-text-primary">
-              The Platform
-            </span>
+          <Link href="/">
+            <span className="text-2xl font-black text-white after:content-['.'] after:text-accent-red">THE PLATFORM</span>
           </Link>
           <nav className="hidden items-center gap-6 md:flex">
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`font-heading text-sm uppercase tracking-wider transition-colors ${
+                className={`font-heading text-sm uppercase tracking-wider font-bold transition-colors ${
                   pathname === item.href
-                    ? "text-accent-primary"
-                    : "text-text-muted hover:text-text-primary"
+                    ? "text-white border-b-2 border-accent-red pb-1"
+                    : "text-zinc-500 hover:text-zinc-300"
                 }`}
               >
                 {item.label}
@@ -52,14 +49,14 @@ export function TopNavInner({ user }: TopNavInnerProps) {
             <div className="flex items-center gap-3">
               <Link
                 href={`/u/${user.username}`}
-                className="font-heading text-sm uppercase tracking-wider text-text-primary hover:text-accent-primary transition-colors"
+                className="font-heading text-sm uppercase tracking-wider text-accent-red hover:bg-white/10 px-3 py-1 rounded-full transition-all"
               >
                 {user.displayName || user.username}
               </Link>
               <form action={logout}>
                 <button
                   type="submit"
-                  className="font-heading text-xs uppercase tracking-wider text-text-muted hover:text-text-primary transition-colors"
+                  className="font-heading text-xs uppercase tracking-wider text-zinc-500 hover:text-zinc-300 transition-colors"
                 >
                   Log Out
                 </button>
@@ -68,7 +65,7 @@ export function TopNavInner({ user }: TopNavInnerProps) {
           ) : (
             <Link
               href="/login"
-              className="font-heading text-sm uppercase tracking-wider text-text-muted hover:text-text-primary transition-colors"
+              className="font-heading text-sm uppercase tracking-wider text-zinc-500 hover:text-zinc-300 transition-colors"
             >
               Log In
             </Link>
