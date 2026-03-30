@@ -2,7 +2,6 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback } from "react";
-import { Button } from "@/components/ui/button";
 
 const FEDERATIONS = ["All", "IPF", "USAPL", "USPA", "SPF", "WRPF", "RPS", "APF", "WPC"];
 const EQUIPMENT = ["All", "Raw", "Wraps", "Single-ply", "Multi-ply"];
@@ -63,10 +62,10 @@ export function LeaderboardFilters({ weightClasses = [] }: LeaderboardFiltersPro
   return (
     <div>
       {/* Dynamic subtitle */}
-      <p className="mb-4 text-sm text-text-muted">{subtitle}</p>
+      <p className="mb-4 text-sm text-text-on-dark-muted">{subtitle}</p>
 
       {/* Filters */}
-      <div className="flex flex-wrap items-end gap-3 bg-bg-surface p-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-16">
         <FilterSelect label="Federation" value={currentFed} options={FEDERATIONS} onChange={(v) => updateFilter("fed", v)} />
         <FilterSelect label="Sex" value={currentSex} options={["M", "F"]} onChange={(v) => updateFilter("sex", v)} />
         <FilterSelect label="Equipment" value={currentEquip} options={EQUIPMENT} onChange={(v) => updateFilter("equip", v)} />
@@ -93,9 +92,14 @@ export function LeaderboardFilters({ weightClasses = [] }: LeaderboardFiltersPro
           labels={SORT_OPTIONS.map((s) => s.label)}
           onChange={(v) => updateFilter("sort", v)}
         />
-        <Button variant="primary" size="sm" onClick={() => router.push("/leaderboard")}>
-          Reset
-        </Button>
+        <div className="flex flex-col justify-end">
+          <button
+            onClick={() => router.push("/leaderboard")}
+            className="py-3 px-4 bg-bg-dark-elevated rounded-lg font-heading text-xs uppercase tracking-widest text-zinc-500 hover:text-white transition-colors"
+          >
+            Reset
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -115,14 +119,14 @@ function FilterSelect({
   onChange: (v: string) => void;
 }) {
   return (
-    <div className="flex flex-col gap-1">
-      <label className="text-xs font-heading uppercase tracking-wider text-text-muted">
+    <div className="space-y-1.5">
+      <label className="block font-heading uppercase text-[10px] font-bold tracking-widest text-zinc-500">
         {label}
       </label>
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="h-9 border border-border bg-bg-primary px-3 text-sm text-text-primary focus:border-accent-primary focus:outline-none"
+        className="w-full bg-bg-dark-elevated border-none text-text-on-dark font-heading font-semibold text-xs rounded-lg focus:ring-1 focus:ring-accent-red py-3 px-3"
       >
         {options.map((opt, i) => (
           <option key={opt} value={opt}>
