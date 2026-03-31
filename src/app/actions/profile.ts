@@ -57,3 +57,30 @@ function parseNum(val: string | null): number | null {
   const n = parseFloat(val);
   return isNaN(n) ? null : n;
 }
+
+export async function completeOnboarding(
+  _prevState: { error: string | null },
+  formData: FormData
+) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "Must be logged in" };
+
+  const display_name = (formData.get("display_name") as string) || null;
+  const sex = (formData.get("sex") as string) || null;
+  const weight_class_kg = (formData.get("weight_class_kg") as string) || null;
+  const equipment = (formData.get("equipment") as string) || null;
+  const opl_name = (formData.get("opl_name") as string) || null;
+
+  const { error } = await supabase
+    .from("profiles")
+    .update({ display_name, sex, weight_class_kg, equipment, opl_name })
+    .eq("id", user.id);
+
+  if (error) return { error: error.message };
+
+  revalidatePath("/");
+  return { error: null };
+}
