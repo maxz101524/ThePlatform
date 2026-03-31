@@ -2,7 +2,6 @@
 
 import { useState, useTransition } from "react";
 import { updateProfile } from "@/app/actions/profile";
-import { Button } from "@/components/ui/button";
 import type { UserProfile } from "@/lib/types";
 
 interface EditProfileFormProps {
@@ -42,14 +41,17 @@ export function EditProfileForm({ profile, onClose }: EditProfileFormProps) {
   }
 
   return (
-    <div className="bg-bg-surface p-6 space-y-4">
+    <div className="bg-bg-dark-elevated rounded-lg p-6 space-y-4 border border-white/10">
       <div className="flex items-center justify-between">
-        <h2 className="font-heading text-xl font-bold uppercase text-text-primary">
+        <h2 className="font-heading text-xl font-bold uppercase text-white">
           Edit Profile
         </h2>
-        <Button variant="ghost" size="sm" onClick={onClose}>
+        <button
+          onClick={onClose}
+          className="text-zinc-400 hover:text-white font-heading uppercase text-sm transition-colors"
+        >
           Cancel
-        </Button>
+        </button>
       </div>
 
       <form action={handleSubmit} className="space-y-4">
@@ -60,7 +62,7 @@ export function EditProfileForm({ profile, onClose }: EditProfileFormProps) {
         </div>
 
         <div>
-          <label className="block text-xs font-heading uppercase tracking-wider text-text-muted mb-1">
+          <label className="block text-zinc-400 font-heading uppercase text-xs tracking-wider mb-1">
             Bio
           </label>
           <textarea
@@ -69,7 +71,7 @@ export function EditProfileForm({ profile, onClose }: EditProfileFormProps) {
             placeholder="Tell the community about yourself..."
             rows={3}
             maxLength={300}
-            className="w-full border border-border bg-bg-primary p-3 text-sm text-text-primary placeholder:text-text-muted focus:border-accent-primary focus:outline-none"
+            className="w-full bg-bg-dark-elevated border border-white/10 rounded-lg p-3 text-sm text-white placeholder:text-zinc-500 focus:border-accent-red focus:outline-none"
           />
         </div>
 
@@ -82,7 +84,7 @@ export function EditProfileForm({ profile, onClose }: EditProfileFormProps) {
 
         {/* Best lifts */}
         <div>
-          <p className="text-xs font-heading uppercase tracking-wider text-text-muted mb-2">
+          <p className="text-zinc-400 font-heading uppercase text-xs tracking-wider mb-2">
             Best Lifts (kg)
           </p>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
@@ -96,9 +98,13 @@ export function EditProfileForm({ profile, onClose }: EditProfileFormProps) {
         {error && <p className="text-sm text-semantic-error">{error}</p>}
 
         <div className="flex justify-end">
-          <Button type="submit" disabled={isPending}>
+          <button
+            type="submit"
+            disabled={isPending}
+            className="bg-accent-red text-white font-heading uppercase rounded-lg px-8 py-3 hover:brightness-110 transition-all disabled:opacity-50"
+          >
             {isPending ? "Saving..." : "Save"}
-          </Button>
+          </button>
         </div>
       </form>
     </div>
@@ -110,14 +116,14 @@ function Field({ label, name, defaultValue, placeholder }: {
 }) {
   return (
     <div>
-      <label className="block text-xs font-heading uppercase tracking-wider text-text-muted mb-1">
+      <label className="block text-zinc-400 font-heading uppercase text-xs tracking-wider mb-1">
         {label}
       </label>
       <input
         name={name}
         defaultValue={defaultValue || ""}
         placeholder={placeholder}
-        className="w-full border border-border bg-bg-primary px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:border-accent-primary focus:outline-none"
+        className="w-full bg-bg-dark-elevated border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:border-accent-red focus:outline-none"
       />
     </div>
   );
@@ -128,7 +134,7 @@ function NumField({ label, name, defaultValue }: {
 }) {
   return (
     <div>
-      <label className="block text-xs font-heading uppercase tracking-wider text-text-muted mb-1">
+      <label className="block text-zinc-400 font-heading uppercase text-xs tracking-wider mb-1">
         {label}
       </label>
       <input
@@ -136,7 +142,7 @@ function NumField({ label, name, defaultValue }: {
         type="number"
         step="0.5"
         defaultValue={defaultValue ?? ""}
-        className="w-full border border-border bg-bg-primary px-3 py-2 text-sm font-mono text-text-primary placeholder:text-text-muted focus:border-accent-primary focus:outline-none"
+        className="w-full bg-bg-dark-elevated border border-white/10 rounded-lg px-4 py-3 text-sm font-mono text-white placeholder:text-zinc-500 focus:border-accent-red focus:outline-none"
       />
     </div>
   );
@@ -147,13 +153,13 @@ function Select({ label, name, defaultValue, options }: {
 }) {
   return (
     <div>
-      <label className="block text-xs font-heading uppercase tracking-wider text-text-muted mb-1">
+      <label className="block text-zinc-400 font-heading uppercase text-xs tracking-wider mb-1">
         {label}
       </label>
       <select
         name={name}
         defaultValue={defaultValue}
-        className="w-full border border-border bg-bg-primary px-3 py-2 text-sm text-text-primary focus:border-accent-primary focus:outline-none"
+        className="w-full bg-bg-dark-elevated border border-white/10 rounded-lg px-4 py-3 text-sm text-white focus:border-accent-red focus:outline-none"
       >
         {options.map((o) => (
           <option key={o.value} value={o.value}>{o.label}</option>

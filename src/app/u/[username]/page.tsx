@@ -44,51 +44,59 @@ export default async function ProfilePage({ params }: Props) {
     : false;
 
   return (
-    <div className="space-y-6">
-      <ProfileHeader
-        profile={profile}
-        isOwnProfile={isOwnProfile}
-        isFollowing={userIsFollowing}
-        isLoggedIn={!!currentUser}
-      />
-
-      {/* Stats */}
-      <StatsBar profile={profile} />
-
-      {/* Media */}
-      <MediaShowcase media={media} isOwnProfile={isOwnProfile} />
-
-      {/* Competition History */}
-      <div>
-        <h2 className="font-heading text-xl font-bold uppercase text-text-primary mb-3">
-          Competition History
-        </h2>
-        <CompetitionHistory results={results} />
+    <>
+      {/* Dark Hero — break out of layout's max-w container */}
+      <div className="-mx-4 -mt-4 bg-bg-dark pt-20 pb-16 px-6 md:px-12">
+        <div className="max-w-7xl mx-auto space-y-8">
+          <ProfileHeader
+            profile={profile}
+            isOwnProfile={isOwnProfile}
+            isFollowing={userIsFollowing}
+            isLoggedIn={!!currentUser}
+          />
+          <StatsBar profile={profile} />
+        </div>
       </div>
 
-      {/* Posts */}
-      {posts.length > 0 && (
-        <div>
-          <h2 className="font-heading text-xl font-bold uppercase text-text-primary mb-3">
-            Posts
-          </h2>
-          <div className="space-y-4">
-            {posts.map((post, index) => (
-              <PostCard
-                key={postKey(post, index)}
-                postId={post.id}
-                username={post.profiles.username}
-                bodyText={post.body_text}
-                linkUrl={post.link_url}
-                linkPreview={post.link_preview}
-                voteCount={post.vote_count}
-                commentCount={post.comment_count}
-                createdAt={post.created_at}
-              />
-            ))}
-          </div>
+      {/* Light Content — break out of layout's max-w container */}
+      <div className="-mx-4 bg-bg-light min-h-[500px]">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 space-y-16">
+          {/* Media */}
+          <MediaShowcase media={media} isOwnProfile={isOwnProfile} />
+
+          {/* Competition History */}
+          <section>
+            <h2 className="font-heading text-3xl font-black uppercase tracking-tighter text-zinc-900 mb-8">
+              Competition History
+            </h2>
+            <CompetitionHistory results={results} />
+          </section>
+
+          {/* Posts */}
+          {posts.length > 0 && (
+            <section>
+              <h2 className="font-heading text-3xl font-black uppercase tracking-tighter text-zinc-900 mb-8">
+                Posts
+              </h2>
+              <div className="space-y-4">
+                {posts.map((post, index) => (
+                  <PostCard
+                    key={postKey(post, index)}
+                    postId={post.id}
+                    username={post.profiles.username}
+                    bodyText={post.body_text}
+                    linkUrl={post.link_url}
+                    linkPreview={post.link_preview}
+                    voteCount={post.vote_count}
+                    commentCount={post.comment_count}
+                    createdAt={post.created_at}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
         </div>
-      )}
-    </div>
+      </div>
+    </>
   );
 }

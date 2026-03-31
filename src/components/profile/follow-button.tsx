@@ -28,10 +28,10 @@ export function FollowButton({ targetId, isFollowing: initialFollowing }: Follow
     <button
       onClick={handleClick}
       disabled={isPending}
-      className={`rounded-md px-4 py-2 text-sm font-heading uppercase tracking-wider transition-colors ${
+      className={`px-8 py-3 rounded-lg font-heading font-bold uppercase transition-all backdrop-blur ${
         following
-          ? "border border-border text-text-muted hover:border-red-500 hover:text-red-500"
-          : "bg-accent-primary text-bg-primary hover:bg-accent-primary/80"
+          ? "bg-white/10 text-white border border-white/10 hover:border-red-500 hover:text-red-500"
+          : "bg-white/10 text-white border border-white/10 hover:bg-white/20"
       } ${isPending ? "opacity-50" : ""}`}
     >
       {isPending ? "..." : following ? "Following" : "Follow"}

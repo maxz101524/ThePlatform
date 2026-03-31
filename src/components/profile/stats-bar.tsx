@@ -11,24 +11,28 @@ export function StatsBar({ profile }: StatsBarProps) {
   if (!hasStats) return null;
 
   return (
-    <div className="flex flex-wrap gap-6 rounded-lg border border-border bg-bg-surface p-4">
-      {profile.best_squat && <StatBlock label="Squat" value={profile.best_squat} />}
-      {profile.best_bench && <StatBlock label="Bench" value={profile.best_bench} />}
-      {profile.best_deadlift && <StatBlock label="Deadlift" value={profile.best_deadlift} />}
-      {profile.best_total && <StatBlock label="Total" value={profile.best_total} highlight />}
-      {profile.dots && <StatBlock label="DOTS" value={profile.dots.toFixed(2)} unit="" />}
-      <div className="flex items-end gap-2">
-        {profile.weight_class_kg && (
-          <span className="inline-flex items-center rounded-full border border-border px-3 py-1 text-xs font-heading uppercase tracking-wider text-text-muted">
-            {profile.weight_class_kg} kg
-          </span>
-        )}
-        {profile.equipment && (
-          <span className="inline-flex items-center rounded-full border border-accent-primary px-3 py-1 text-xs font-heading uppercase tracking-wider text-accent-primary">
-            {profile.equipment}
-          </span>
-        )}
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+        {profile.best_squat && <StatBlock label="Squat" value={profile.best_squat} accent="red" />}
+        {profile.best_bench && <StatBlock label="Bench" value={profile.best_bench} accent="blue" />}
+        {profile.best_deadlift && <StatBlock label="Deadlift" value={profile.best_deadlift} accent="yellow" />}
+        {profile.best_total && <StatBlock label="Total" value={profile.best_total} accent="default" />}
+        {profile.dots && <StatBlock label="DOTS" value={profile.dots.toFixed(2)} unit="" />}
       </div>
+      {(profile.weight_class_kg || profile.equipment) && (
+        <div className="flex gap-2">
+          {profile.weight_class_kg && (
+            <span className="font-heading text-xs border border-white/10 px-3 py-1 rounded-sm text-zinc-400 uppercase">
+              {profile.weight_class_kg} kg
+            </span>
+          )}
+          {profile.equipment && (
+            <span className="font-heading text-xs border border-white/10 px-3 py-1 rounded-sm text-zinc-400 uppercase">
+              {profile.equipment}
+            </span>
+          )}
+        </div>
+      )}
     </div>
   );
 }
