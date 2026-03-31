@@ -10,7 +10,7 @@ export default async function SearchPage({ searchParams }: Props) {
 
   if (!q) {
     return (
-      <div className="bg-bg-light min-h-screen flex items-center justify-center">
+      <div className="bg-bg-light min-h-screen -mx-4 -mt-4 pb-20 md:pb-6 flex items-center justify-center">
         <p className="text-zinc-500">Search for users</p>
       </div>
     );
@@ -19,7 +19,7 @@ export default async function SearchPage({ searchParams }: Props) {
   const profiles = await searchProfiles(q);
 
   return (
-    <div className="bg-bg-light min-h-screen">
+    <div className="bg-bg-light min-h-screen -mx-4 -mt-4 pb-20 md:pb-6">
       <div className="space-y-8">
         <h1 className="font-heading text-3xl font-bold uppercase text-zinc-900">
           Results for &ldquo;{q}&rdquo;

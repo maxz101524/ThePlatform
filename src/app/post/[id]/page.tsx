@@ -23,7 +23,7 @@ export default async function PostDetailPage({
   if (!post) notFound();
 
   return (
-    <div className="bg-bg-light min-h-screen">
+    <div className="bg-bg-light min-h-screen -mx-4 -mt-4 pb-20 md:pb-6">
       <div className="max-w-2xl mx-auto space-y-4">
         <Link
           href="/"

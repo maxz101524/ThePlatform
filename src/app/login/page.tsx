@@ -40,7 +40,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="bg-bg-light min-h-screen">
+    <div className="bg-bg-light min-h-screen -mx-4 -mt-4 pb-20 md:pb-6">
       <div className="mx-auto max-w-sm space-y-6 pt-20">
         <h1 className="font-heading text-3xl font-bold uppercase text-zinc-900 text-center">
           Log In

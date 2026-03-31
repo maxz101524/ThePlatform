@@ -37,7 +37,7 @@ export default async function LeaderboardPage({ searchParams }: Props) {
   const tableStartRank = showPodium ? 3 : offset;
 
   return (
-    <div className="bg-bg-dark min-h-screen">
+    <div className="bg-bg-dark min-h-screen -mx-4 -mt-4 pb-20 md:pb-6">
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-12 space-y-8">
         {/* Header */}
         <div>

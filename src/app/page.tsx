@@ -63,7 +63,7 @@ export default async function FeedPage({
   ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   return (
-    <div className="bg-bg-light min-h-screen">
+    <div className="bg-bg-light min-h-screen -mx-4 -mt-4 pb-20 md:pb-6">
       <div className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 gap-6 lg:grid-cols-[240px_1fr_280px]">
         {/* Left column — Notable Results */}
         <aside className="hidden lg:block bg-bg-dark text-text-on-dark p-6 rounded-xl sticky top-24 h-[calc(100vh-120px)] overflow-y-auto space-y-4">
