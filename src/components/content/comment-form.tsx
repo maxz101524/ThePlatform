@@ -39,7 +39,7 @@ export function CommentForm({ postId, parentCommentId, onCancel, autoFocus }: Co
         placeholder={parentCommentId ? "Write a reply..." : "Write a comment..."}
         maxLength={1000}
         autoFocus={autoFocus}
-        className="w-full bg-bg-primary border border-border p-3 text-sm text-text-primary placeholder:text-text-muted resize-none focus:outline-none focus:border-accent-primary"
+        className="w-full bg-white border border-zinc-200 rounded-lg p-3 text-sm resize-none focus:outline-none focus:border-accent-red placeholder:text-zinc-400"
         rows={3}
       />
       {error && <p className="text-xs text-semantic-error">{error}</p>}
@@ -48,7 +48,7 @@ export function CommentForm({ postId, parentCommentId, onCancel, autoFocus }: Co
           <button
             type="button"
             onClick={onCancel}
-            className="px-3 py-1.5 text-xs text-text-muted hover:text-text-secondary transition-colors"
+            className="px-3 py-1.5 text-xs text-zinc-400 hover:text-zinc-700 transition-colors"
           >
             Cancel
           </button>
@@ -56,7 +56,7 @@ export function CommentForm({ postId, parentCommentId, onCancel, autoFocus }: Co
         <button
           type="submit"
           disabled={isPending || !body.trim()}
-          className="px-4 py-1.5 text-xs font-heading uppercase tracking-wider bg-accent-primary text-bg-primary hover:bg-accent-primary/80 transition-colors disabled:opacity-50"
+          className="px-4 py-1.5 text-xs font-heading uppercase tracking-wider rounded-lg bg-accent-red text-white hover:bg-accent-red/80 transition-colors disabled:opacity-50"
         >
           {isPending ? "Posting..." : "Post"}
         </button>

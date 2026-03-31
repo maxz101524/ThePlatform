@@ -39,52 +39,54 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="mx-auto max-w-sm space-y-6 pt-20">
-      <h1 className="font-heading text-3xl font-bold uppercase text-text-primary text-center">
-        Sign Up
-      </h1>
-      <form onSubmit={handleSignup} className="space-y-4">
-        <input
-          type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          className="w-full rounded-md border border-border bg-bg-surface px-4 py-3 text-sm text-text-primary placeholder:text-text-muted focus:border-accent-primary focus:outline-none"
-          required
-        />
-        <input
-          type="text"
-          placeholder="OPL Name (optional, e.g. 'John Haack')"
-          value={oplName}
-          onChange={(e) => setOplName(e.target.value)}
-          className="w-full rounded-md border border-border bg-bg-surface px-4 py-3 text-sm text-text-primary placeholder:text-text-muted focus:border-accent-primary focus:outline-none"
-        />
-        <p className="text-xs text-text-muted -mt-2">
-          Claim your OpenPowerlifting identity to import your competition history.
+    <div className="bg-bg-light min-h-screen">
+      <div className="mx-auto max-w-sm space-y-6 pt-20">
+        <h1 className="font-heading text-3xl font-bold uppercase text-zinc-900 text-center">
+          Sign Up
+        </h1>
+        <form onSubmit={handleSignup} className="space-y-4">
+          <input
+            type="text"
+            placeholder="Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            className="w-full border border-zinc-200 bg-white rounded-lg px-4 py-3 text-sm focus:border-accent-red focus:outline-none"
+            required
+          />
+          <input
+            type="text"
+            placeholder="OPL Name (optional, e.g. 'John Haack')"
+            value={oplName}
+            onChange={(e) => setOplName(e.target.value)}
+            className="w-full border border-zinc-200 bg-white rounded-lg px-4 py-3 text-sm focus:border-accent-red focus:outline-none"
+          />
+          <p className="text-xs text-zinc-500 -mt-2">
+            Claim your OpenPowerlifting identity to import your competition history.
+          </p>
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full border border-zinc-200 bg-white rounded-lg px-4 py-3 text-sm focus:border-accent-red focus:outline-none"
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password (min 6 characters)"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full border border-zinc-200 bg-white rounded-lg px-4 py-3 text-sm focus:border-accent-red focus:outline-none"
+            required
+            minLength={6}
+          />
+          {error && <p className="text-sm text-red-500">{error}</p>}
+          <Button type="submit" className="w-full rounded-lg">Create Account</Button>
+        </form>
+        <p className="text-center text-sm text-zinc-500">
+          Already have an account? <a href="/login" className="text-accent-red hover:underline">Log in</a>
         </p>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full rounded-md border border-border bg-bg-surface px-4 py-3 text-sm text-text-primary placeholder:text-text-muted focus:border-accent-primary focus:outline-none"
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password (min 6 characters)"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full rounded-md border border-border bg-bg-surface px-4 py-3 text-sm text-text-primary placeholder:text-text-muted focus:border-accent-primary focus:outline-none"
-          required
-          minLength={6}
-        />
-        {error && <p className="text-sm text-semantic-error">{error}</p>}
-        <Button type="submit" className="w-full">Create Account</Button>
-      </form>
-      <p className="text-center text-sm text-text-muted">
-        Already have an account? <a href="/login" className="text-accent-primary hover:underline">Log in</a>
-      </p>
+      </div>
     </div>
   );
 }
