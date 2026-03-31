@@ -3,7 +3,6 @@
 import { useState, useTransition } from "react";
 import { createPost } from "@/app/actions/posts";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 
 export function CreatePostForm() {
   const [expanded, setExpanded] = useState(false);
@@ -12,12 +11,12 @@ export function CreatePostForm() {
 
   if (!expanded) {
     return (
-      <Card
-        className="cursor-pointer text-text-muted hover:border-accent-primary transition-colors"
+      <div
+        className="bg-white rounded-xl shadow-sm border border-zinc-200 p-5 cursor-pointer text-zinc-400 hover:border-accent-red transition-colors"
         onClick={() => setExpanded(true)}
       >
         What&apos;s on your mind?
-      </Card>
+      </div>
     );
   }
 
@@ -34,12 +33,12 @@ export function CreatePostForm() {
   }
 
   return (
-    <Card>
+    <div className="bg-white rounded-xl shadow-sm border border-zinc-200 p-5">
       <form action={handleSubmit} className="space-y-3">
         <textarea
           name="body_text"
           placeholder="Share a take, link a video, start a discussion..."
-          className="w-full resize-none border border-border bg-bg-primary p-3 text-sm text-text-primary placeholder:text-text-muted focus:border-accent-primary focus:outline-none"
+          className="w-full border-none focus:ring-0 p-0 text-zinc-800 placeholder:text-zinc-400 resize-none text-sm focus:outline-none"
           rows={3}
           maxLength={2000}
           required
@@ -48,7 +47,7 @@ export function CreatePostForm() {
           name="link_url"
           type="url"
           placeholder="Paste a link (optional)"
-          className="w-full border border-border bg-bg-primary px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:border-accent-primary focus:outline-none"
+          className="w-full border border-zinc-200 bg-zinc-50 rounded-md px-3 py-2 text-sm text-zinc-800 placeholder:text-zinc-400 focus:border-accent-red focus:outline-none"
         />
         {error && (
           <p className="text-sm text-semantic-error">{error}</p>
@@ -57,11 +56,15 @@ export function CreatePostForm() {
           <Button variant="ghost" size="sm" type="button" onClick={() => setExpanded(false)}>
             Cancel
           </Button>
-          <Button variant="primary" size="sm" type="submit" disabled={isPending}>
+          <button
+            type="submit"
+            disabled={isPending}
+            className="bg-accent-red text-white font-heading px-8 py-2 rounded-lg hover:bg-accent-red/90 font-bold tracking-tight uppercase text-sm disabled:opacity-50"
+          >
             {isPending ? "Posting..." : "Post"}
-          </Button>
+          </button>
         </div>
       </form>
-    </Card>
+    </div>
   );
 }

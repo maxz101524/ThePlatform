@@ -21,23 +21,23 @@ export function FeedTabs({ isLoggedIn }: { isLoggedIn: boolean }) {
   }
 
   return (
-    <div className="flex gap-0 bg-bg-surface mb-4">
+    <div className="flex gap-8 mb-6 border-b border-zinc-200">
       <button
         onClick={() => setTab("for-you")}
-        className={`px-4 py-2 text-sm font-heading uppercase tracking-wider transition-colors ${
+        className={`font-heading text-lg font-bold uppercase transition-colors ${
           activeTab === "for-you"
-            ? "text-accent-primary border-b-2 border-accent-primary"
-            : "text-text-muted hover:text-text-secondary"
+            ? "text-zinc-900 border-b-4 border-accent-red pb-2"
+            : "text-zinc-400 pb-2 hover:text-zinc-600"
         }`}
       >
         For You
       </button>
       <button
         onClick={() => setTab("following")}
-        className={`px-4 py-2 text-sm font-heading uppercase tracking-wider transition-colors ${
+        className={`font-heading text-lg font-bold uppercase transition-colors ${
           activeTab === "following"
-            ? "text-accent-primary border-b-2 border-accent-primary"
-            : "text-text-muted hover:text-text-secondary"
+            ? "text-zinc-900 border-b-4 border-accent-red pb-2"
+            : "text-zinc-400 pb-2 hover:text-zinc-600"
         }`}
       >
         Following

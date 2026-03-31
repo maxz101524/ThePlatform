@@ -18,19 +18,19 @@ export function VoteButtons({ postId, voteCount }: Props) {
   }
 
   return (
-    <div className={`flex items-center gap-1 text-xs ${isPending ? "opacity-50" : ""}`}>
+    <div className={`flex items-center gap-1 bg-zinc-50 rounded-lg px-2 py-1 ${isPending ? "opacity-50" : ""}`}>
       <button
         onClick={() => handleVote(1)}
-        className="text-text-muted hover:text-accent-primary transition-colors"
+        className="text-zinc-400 hover:text-accent-red transition-colors text-lg"
         disabled={isPending}
         aria-label="Upvote"
       >
         ▲
       </button>
-      <span className="font-mono text-text-secondary min-w-[1.5rem] text-center">{voteCount}</span>
+      <span className="font-mono text-xs font-bold text-zinc-700 min-w-[1.5rem] text-center">{voteCount}</span>
       <button
         onClick={() => handleVote(-1)}
-        className="text-text-muted hover:text-accent-primary transition-colors"
+        className="text-zinc-400 hover:text-accent-blue transition-colors text-lg"
         disabled={isPending}
         aria-label="Downvote"
       >
