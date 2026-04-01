@@ -10,18 +10,19 @@ A powerlifting community platform with global rankings, athlete profiles, meet r
 - **Language:** TypeScript 5.9
 - **Database:** Supabase (hosted PostgreSQL + Auth)
 - **Styling:** Tailwind CSS 4 with custom theme tokens in `src/app/globals.css`
-- **Fonts:** Barlow Condensed (headings), Inter (body), JetBrains Mono (numeric data)
+- **Fonts:** Barlow Condensed (headings), Lexend (display), Inter (body), JetBrains Mono (numeric data)
 - **Data:** OpenPowerlifting CSV (seeded via `scripts/seed-leaderboard.ts`)
 
-## Design System: "Soft Brutalist"
+## Design System: "Competition Gallery"
 
-See `DESIGN.md` for the full design document ("The Iron Ledger" theme).
+See `DESIGN.md` for the full design document.
 
 Key rules:
-- **0px border radius everywhere** — no `rounded-*` classes on any element
-- **No 1px border dividers** — define boundaries through background tonal shifts (`bg-bg-surface` on `bg-bg-primary`)
-- **Typography:** Epilogue/Barlow Condensed for headlines (uppercase, tight tracking), Space Grotesk/JetBrains Mono for numeric data
-- **Colors:** Monochromatic charcoal base, rusted orange (`#E8491A`) accent, gold (`#FFB800`) for totals/rankings, tertiary blue (`#019AD8`) for freshness/records
+- **Rounded corners everywhere** — `rounded-lg` (12px) on cards, `rounded-md` (8px) on buttons/inputs, `rounded-sm` (4px) on chips
+- **Soft shadows on cards** — `shadow-soft` for gentle elevation
+- **Light surfaces** — white base (`#FFFFFF`), light gray cards (`#F8F9FA`), with `border border-border` for definition
+- **Typography:** Barlow Condensed for headlines (uppercase, tight tracking), Lexend for display text, JetBrains Mono for all numeric data
+- **Plate-coded accents:** Red (`#E8491A`) = Squat/Primary, Blue (`#019AD8`) = Bench/Info, Yellow (`#FFB800`) = Deadlift/Highlights, Green (`#4CAF50`) = Tested
 
 ## Project Structure
 
@@ -56,7 +57,7 @@ supabase/
 - **URL-driven state** — leaderboard filters use `searchParams` (no client state for filter values)
 - **Parallel data fetching** — use `Promise.all` when multiple queries are independent
 - **Deduplication** — leaderboard shows each lifter once (best result), overfetches 3x then deduplicates client-side
-- **Tonal layering for depth** — `bg-bg-primary` → `bg-bg-surface` → `bg-bg-surface-elevated` (no shadows)
+- **Layered depth** — `bg-bg-primary` → `bg-bg-surface` + `shadow-soft` + `rounded-lg` → `bg-bg-surface-elevated` for hover
 
 ## Database
 

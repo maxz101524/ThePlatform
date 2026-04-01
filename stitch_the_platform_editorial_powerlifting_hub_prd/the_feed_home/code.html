@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Feed - The Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Chivo:wght@400;700&amp;family=Space+Mono:wght@400;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "primary": "#FF5722",
+          "background-light": "#f8f6f5",
+          "background-dark": "#161618",
+          "surface-dark": "#232326",
+          "text-light": "#EBEBEB",
+          "muted-grey": "#85858B",
+          "accent-brass": "#FFC107",
+        },
+        fontFamily: {
+          "display": ["Anton", "sans-serif"],
+          "body": ["Chivo", "sans-serif"],
+          "mono": ["Space Mono", "monospace"],
+        },
+        borderRadius: {"DEFAULT": "0px", "lg": "0px", "xl": "0px", "full": "0px", "sm": "0px"},
+      },
+    },
+  }
+</script>
+<style>
+  /* Base styles to enforce the design system */
+  body {
+    background-color: #161618;
+    color: #EBEBEB;
+    font-family: 'Chivo', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Anton', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+  
+  .font-mono {
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* Thin borders */
+  .border-thin {
+    border: 1px solid #85858B;
+  }
+  .border-b-thin {
+    border-bottom: 1px solid #85858B;
+  }
+  .border-r-thin {
+    border-right: 1px solid #85858B;
+  }
+
+  /* Video hover state simulation */
+  .video-card {
+    position: relative;
+    overflow: hidden;
+  }
+  .video-card video {
+    transition: opacity 0.3s ease;
+  }
+  .video-card .hover-overlay {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    background: linear-gradient(0deg, rgba(22,22,24,0.9) 0%, rgba(22,22,24,0.4) 50%, rgba(22,22,24,0) 100%);
+  }
+  .video-card:hover .hover-overlay {
+    opacity: 1;
+  }
+
+  /* Hype Button */
+  .hype-btn {
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+  .hype-btn:hover {
+    background-color: #FF5722;
+    color: #161618;
+    border-color: #FF5722;
+  }
+
+  /* Masonry Grid Setup */
+  .masonry-grid {
+    column-count: 1;
+    column-gap: 24px;
+  }
+  @media (min-width: 768px) {
+    .masonry-grid {
+      column-count: 2;
+    }
+  }
+  @media (min-width: 1024px) {
+    .masonry-grid {
+      column-count: 2; /* Center column is 2 columns wide in the 3-col layout */
+    }
+  }
+  .masonry-item {
+    break-inside: avoid;
+    margin-bottom: 24px;
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #161618;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #232326;
+    border: 1px solid #85858B;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #85858B;
+  }
+</style>
+</head>
+<body class="bg-background-dark text-text-light min-h-screen flex flex-col overflow-x-hidden">
+<!-- Shared TopNavBar -->
+<div class="relative flex h-auto w-full flex-col bg-background-dark dark group/design-root overflow-x-hidden border-b-thin sticky top-0 z-50">
+<div class="layout-container flex h-full grow flex-col">
+<div class="px-4 md:px-8 flex flex-1 justify-center py-4">
+<div class="layout-content-container flex flex-col w-full max-w-[1440px] flex-1">
+<header class="flex items-center justify-between whitespace-nowrap px-4 py-2">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-4 text-primary">
+<div class="size-6">
+<!-- Abstract Barbell Logo -->
+<svg fill="currentColor" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M4 22H10V14H14V22H34V14H38V22H44V26H38V34H34V26H14V34H10V26H4V22Z"></path>
+</svg>
+</div>
+<h2 class="text-text-light text-2xl font-display leading-tight tracking-wide">THE PLATFORM</h2>
+</div>
+<nav class="hidden md:flex items-center gap-8 ml-8">
+<a class="text-primary text-sm font-bold font-mono uppercase tracking-widest border-b-2 border-primary pb-1" href="#">The Feed</a>
+<a class="text-muted-grey hover:text-text-light text-sm font-bold font-mono uppercase tracking-widest transition-colors pb-1" href="#">Leaderboard</a>
+<a class="text-muted-grey hover:text-text-light text-sm font-bold font-mono uppercase tracking-widest transition-colors pb-1" href="#">Meet Hub</a>
+</nav>
+</div>
+<div class="flex flex-1 justify-end gap-6 items-center">
+<label class="hidden lg:flex flex-col min-w-40 !h-10 max-w-64">
+<div class="flex w-full flex-1 items-stretch rounded-none h-full border-thin bg-surface-dark">
+<div class="text-muted-grey flex items-center justify-center pl-3" data-icon="search" data-size="20px" data-weight="regular">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-none text-text-light focus:outline-0 focus:ring-0 border-none bg-transparent focus:border-none h-full placeholder:text-muted-grey px-3 font-mono text-xs" placeholder="FIND LIFTER..." value=""/>
+</div>
+</label>
+<div class="bg-surface-dark border-thin aspect-square bg-cover bg-center size-10 cursor-pointer hover:border-primary transition-colors" data-alt="User Profile Avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDp8vgVFzPqdCysd1Sz9pAjwzGxBFcxXYYAlmtGd6MG_jQyXam1V2fRIKVCIFr5W9f9kvdGX754CXboGn--13pwwtiOXZwvAAcBF3cGhqm6N86mV8tDWJ-YPh3D0Qz4t3Ke0R9lmhAvtgzFnPwRBCOakRcYzzRGUtb8fsxlxTRMQSr0LjIdrUlCaY28gHQJshmhOtAMpRHiCfM64urNROZIomALh8bPsKPikMg0kvV9G8HGx8ausbpAP70zHXc1Kt-cOv0PLJDaSe8");'></div>
+</div>
+</header>
+</div>
+</div>
+</div>
+</div>
+<!-- Main Content Grid -->
+<main class="flex-1 w-full max-w-[1440px] mx-auto px-4 md:px-8 py-8 grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8">
+<!-- Left Column: Quick News (Hidden on mobile) -->
+<aside class="hidden md:flex flex-col col-span-3 lg:col-span-3 gap-6">
+<div class="flex items-center gap-2 mb-2 border-b-thin pb-2">
+<span class="material-symbols-outlined text-primary text-xl">campaign</span>
+<h3 class="font-display text-xl text-text-light">DISPATCHES</h3>
+</div>
+<!-- News Item -->
+<article class="group cursor-pointer border-b-thin pb-4 border-muted-grey/30">
+<div class="flex justify-between items-start mb-1">
+<span class="font-mono text-[10px] text-primary uppercase">USAPL Drama</span>
+<span class="font-mono text-[10px] text-muted-grey">2H AGO</span>
+</div>
+<h4 class="font-body font-bold text-sm text-text-light group-hover:text-primary transition-colors leading-tight mb-2">Roster changes announced for upcoming Raw Nationals</h4>
+<p class="font-body text-xs text-muted-grey line-clamp-2">Several top-seeded lifters have withdrawn from the 93kg class citing injury, leaving the podium wide open.</p>
+</article>
+<!-- News Item -->
+<article class="group cursor-pointer border-b-thin pb-4 border-muted-grey/30">
+<div class="flex justify-between items-start mb-1">
+<span class="font-mono text-[10px] text-primary uppercase">Equipment</span>
+<span class="font-mono text-[10px] text-muted-grey">5H AGO</span>
+</div>
+<h4 class="font-body font-bold text-sm text-text-light group-hover:text-primary transition-colors leading-tight mb-2">New IPF approved lever belts drop tomorrow</h4>
+<p class="font-body text-xs text-muted-grey line-clamp-2">The latest drop from SBD features a revised buckle mechanism and stiffer leather core.</p>
+</article>
+<!-- News Item -->
+<article class="group cursor-pointer pb-4">
+<div class="flex justify-between items-start mb-1">
+<span class="font-mono text-[10px] text-primary uppercase">World Record</span>
+<span class="font-mono text-[10px] text-muted-grey">1D AGO</span>
+</div>
+<h4 class="font-body font-bold text-sm text-text-light group-hover:text-primary transition-colors leading-tight mb-2">Unofficial 800lb deadlift pulled in training</h4>
+<p class="font-body text-xs text-muted-grey line-clamp-2">Footage surfaces of a massive pull during a heavy single block.</p>
+</article>
+<div class="mt-4 p-4 bg-surface-dark border-thin border-primary/50 relative overflow-hidden">
+<div class="absolute top-0 right-0 w-16 h-16 bg-primary/10 -mr-8 -mt-8 rotate-45"></div>
+<h4 class="font-display text-lg text-primary mb-1">JOIN THE PLATFORM</h4>
+<p class="font-body text-xs text-muted-grey mb-4">Connect your federation ID to track your DOTS and sync your training footage.</p>
+<button class="w-full bg-transparent border-thin border-text-light text-text-light font-mono text-xs py-2 hover:bg-text-light hover:text-background-dark transition-colors uppercase font-bold tracking-wider">Connect ID</button>
+</div>
+</aside>
+<!-- Center Column: Media Feed -->
+<section class="col-span-1 md:col-span-9 lg:col-span-6 flex flex-col gap-6">
+<!-- Hero Editorial Card -->
+<article class="video-card w-full aspect-video bg-surface-dark border-thin relative flex flex-col justify-end cursor-pointer group">
+<!-- Placeholder for Video -->
+<div class="absolute inset-0 bg-cover bg-center z-0 opacity-80 mix-blend-luminosity group-hover:mix-blend-normal transition-all duration-500" data-alt="Powerlifter squatting heavy weight" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAnKk4FMX-ytJ7f4alTn-UsvYc1UxEpjnE5UTm8AAu2JB8RbE4E6ZIv79vnSxKZJlVuunAKMlats5mTdk94IxABn4DHyO3Ut3mLLJF0ojEaAln1xly4SoOUf3iRKR1AJ8CSsIbbGEurUetyGnGNoYqBC1jJmXktBHhEtGyAmDzFmYeqfuQv7RL2vQhrseSyBA2TXDdPEzbnK33QyipKr2cz-oSGrit1arnRWVuKsNCgdXp3X3E5LVnTpH9QSsYGveb3bUtlD6ayNJ4');"></div>
+<!-- Gradient Overlay -->
+<div class="absolute inset-0 z-10 bg-gradient-to-t from-background-dark via-background-dark/50 to-transparent"></div>
+<!-- Top Badges -->
+<div class="absolute top-4 left-4 z-20 flex gap-2">
+<span class="bg-primary text-background-dark font-mono text-[10px] font-bold px-2 py-1 uppercase">Breaking</span>
+<span class="bg-surface-dark border-thin text-text-light font-mono text-[10px] px-2 py-1 uppercase flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">visibility</span> 124K
+        </span>
+</div>
+<!-- Audio Toggle (Visible on hover) -->
+<button class="absolute top-4 right-4 z-20 w-8 h-8 bg-surface-dark/80 backdrop-blur border-thin flex items-center justify-center text-text-light hover:text-primary transition-colors opacity-0 group-hover:opacity-100">
+<span class="material-symbols-outlined text-[16px]">volume_off</span>
+</button>
+<!-- Content -->
+<div class="relative z-20 p-6 w-full max-w-2xl">
+<p class="font-mono text-primary text-xs font-bold mb-2 uppercase tracking-widest">Sheffield 2024 Prep</p>
+<h2 class="font-display text-4xl md:text-5xl lg:text-6xl text-text-light leading-[0.9] mb-4">JESUS OLIVARES HITS 475KG SQUAT</h2>
+<div class="flex items-center justify-between">
+<p class="font-body text-sm text-muted-grey hidden md:block max-w-md">Moving at RPE 8. This puts his projected total comfortably above the current superheavyweight world record.</p>
+<button class="hype-btn flex items-center justify-center w-10 h-10 border-thin border-text-light text-text-light bg-transparent">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Masonry Feed -->
+<div class="masonry-grid">
+<!-- Social Card: 9:16 Reel -->
+<article class="masonry-item video-card bg-surface-dark border-thin flex flex-col">
+<div class="relative aspect-[9/16] bg-[#1a1a1c]">
+<div class="absolute inset-0 bg-cover bg-center opacity-70 grayscale group-hover:grayscale-0 transition-all duration-300" data-alt="Lifter preparing for deadlift" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBbE15yJfhQDIrNQorc9chgMIbntxMKee9P6muHh_IT39HC_Uuu-K9y5mqlBURY-iwUmboyF9c2NI2hzKiavOHcm3jJrBiXZFM5EKnX6zwz8aheg9bWwE1TQTaeuCDiFAMbNJEcRjNwSkfFijoYNIRdalMFIY6QeRx7nnBaq32eXkUSbeLimZIHdNw2JvhPEWndvHtYyh1pv3ZnBKCOGKlneOUoJcmVsd9kX5bYIQSSxmEBCLLv_a3eVRUHCVbQptYaNcKvkbEOFVE');"></div>
+<div class="absolute top-3 left-3 z-10 bg-background-dark/80 backdrop-blur p-1 border-thin flex items-center justify-center">
+<!-- IG Icon placeholder -->
+<span class="material-symbols-outlined text-text-light text-[14px]">photo_camera</span>
+</div>
+<!-- Hover Overlay Data -->
+<div class="hover-overlay absolute inset-0 z-10 flex flex-col justify-end p-4">
+<div class="flex justify-between items-end w-full mb-4">
+<div class="flex flex-col gap-1">
+<span class="font-mono text-[10px] text-muted-grey bg-background-dark/80 px-1 w-max">LIFTER METRICS</span>
+<span class="font-mono text-xs text-text-light font-bold bg-background-dark/80 px-1 w-max">DOTS: 512.4</span>
+<span class="font-mono text-xs text-text-light font-bold bg-background-dark/80 px-1 w-max">CLASS: -93KG</span>
+</div>
+<button class="w-8 h-8 bg-surface-dark/80 backdrop-blur border-thin flex items-center justify-center text-text-light hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[16px]">volume_up</span>
+</button>
+</div>
+</div>
+</div>
+<div class="p-4 border-t-thin border-muted-grey/30">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-display text-lg text-text-light uppercase tracking-wide">AMANDA LAWRENCE</h3>
+<span class="font-mono text-[10px] text-muted-grey">3H AGO</span>
+</div>
+<p class="font-body text-sm text-text-light mb-4 line-clamp-3">3x3 deadlifts at 240kg. Hook grip holding up nicely. Feeling locked in for the next block. #powerlifting #deadlift</p>
+<div class="flex justify-between items-center pt-3 border-t-thin border-muted-grey/20">
+<div class="flex gap-4">
+<div class="flex items-center gap-1 text-muted-grey font-mono text-[10px]">
+<span class="material-symbols-outlined text-[14px]">favorite</span> 12.4K
+                </div>
+<div class="flex items-center gap-1 text-muted-grey font-mono text-[10px]">
+<span class="material-symbols-outlined text-[14px]">chat_bubble</span> 342
+                </div>
+</div>
+<button class="hype-btn flex items-center justify-center w-8 h-8 border-thin border-muted-grey text-muted-grey bg-transparent">
+<span class="material-symbols-outlined text-[16px]">local_fire_department</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Social Card: 16:9 Post -->
+<article class="masonry-item video-card bg-surface-dark border-thin flex flex-col">
+<div class="relative aspect-[16/9] bg-[#1a1a1c]">
+<div class="absolute inset-0 bg-cover bg-center opacity-70 grayscale group-hover:grayscale-0 transition-all duration-300" data-alt="Bench press setup" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuA6QuBRDst6mCCBibConNwleYpLDC5uIHAhdoiadJ8172iF3d63FWn2l3XDOc8axwg7PBwXlAcOMFeCVVlRA1dONvbS5dO0iGVOMQS31im6QFp01b4xn6C3cdripch8hsF4lAQsyQJV7_pMTvNzJ_kFTs4hiworY2VBhKjO6pumfvRQScy_KBaqwgOoMbtf1ZcTie-54uqYAeXLoKkiVWbysD4Rl7OhmcZUFrWlXWSOnhtJNmVU0wtoli7ITC8NNSIPFk_bZq4aKU8');"></div>
+<div class="absolute top-3 left-3 z-10 bg-background-dark/80 backdrop-blur p-1 border-thin flex items-center justify-center">
+<span class="material-symbols-outlined text-text-light text-[14px]">photo_camera</span>
+</div>
+</div>
+<div class="p-4 border-t-thin border-muted-grey/30">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-display text-lg text-text-light uppercase tracking-wide">JULIUS MADDOX</h3>
+<span class="font-mono text-[10px] text-muted-grey">6H AGO</span>
+</div>
+<p class="font-body text-sm text-text-light mb-4 line-clamp-2">Speed work on the bench today. 600lbs moving like an empty bar.</p>
+<div class="flex justify-between items-center pt-3 border-t-thin border-muted-grey/20">
+<div class="flex gap-4">
+<div class="flex items-center gap-1 text-muted-grey font-mono text-[10px]">
+<span class="material-symbols-outlined text-[14px]">favorite</span> 45.1K
+                </div>
+</div>
+<button class="hype-btn flex items-center justify-center w-8 h-8 border-thin border-muted-grey text-muted-grey bg-transparent">
+<span class="material-symbols-outlined text-[16px]">local_fire_department</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Skeleton Loading State Card (Demonstrating the wipe) -->
+<article class="masonry-item bg-surface-dark border-thin flex flex-col relative overflow-hidden">
+<!-- Wipe Animation Element -->
+<div class="absolute inset-0 bg-gradient-to-b from-transparent via-[#2a2a2e] to-transparent z-20 animate-[wipe_1.5s_infinite_linear]" style="background-size: 100% 200%;"></div>
+<div class="relative aspect-square bg-[#1a1a1c] z-10 opacity-50"></div>
+<div class="p-4 border-t-thin border-muted-grey/30 z-10 opacity-50 bg-surface-dark">
+<div class="h-6 bg-[#1a1a1c] w-3/4 mb-4"></div>
+<div class="h-3 bg-[#1a1a1c] w-full mb-2"></div>
+<div class="h-3 bg-[#1a1a1c] w-2/3 mb-6"></div>
+<div class="h-8 bg-[#1a1a1c] w-full border-t-thin border-muted-grey/20 mt-2"></div>
+</div>
+<style>
+            @keyframes wipe {
+                0% { background-position: 0% -100%; }
+                100% { background-position: 0% 200%; }
+            }
+        </style>
+</article>
+</div>
+</section>
+<!-- Right Column: Meet Ticker -->
+<aside class="hidden lg:flex flex-col col-span-3 gap-6">
+<div class="flex flex-col border-thin bg-surface-dark">
+<div class="p-3 border-b-thin bg-background-dark flex items-center justify-between">
+<h3 class="font-display text-lg text-text-light">UPCOMING MEETS</h3>
+<span class="material-symbols-outlined text-primary text-[18px]">calendar_month</span>
+</div>
+<!-- Meet Item -->
+<a class="group block p-4 border-b-thin border-muted-grey/30 hover:bg-background-dark transition-colors" href="#">
+<div class="flex justify-between items-start mb-2">
+<h4 class="font-display text-xl text-text-light group-hover:text-primary transition-colors uppercase leading-none">SHEFFIELD 2024</h4>
+</div>
+<div class="flex flex-col gap-1 mb-3">
+<span class="font-mono text-[10px] text-muted-grey uppercase">Powerlifting America / IPF</span>
+<span class="font-mono text-[10px] text-muted-grey uppercase">Sheffield, UK</span>
+</div>
+<div class="flex items-center gap-2 bg-background-dark border-thin p-2 w-max">
+<span class="material-symbols-outlined text-accent-brass text-[14px]">timer</span>
+<span class="font-mono text-xs font-bold text-text-light">14:08:22:15</span>
+</div>
+</a>
+<!-- Meet Item -->
+<a class="group block p-4 border-b-thin border-muted-grey/30 hover:bg-background-dark transition-colors" href="#">
+<div class="flex justify-between items-start mb-2">
+<h4 class="font-display text-xl text-text-light group-hover:text-primary transition-colors uppercase leading-none">RAW NATIONALS</h4>
+</div>
+<div class="flex flex-col gap-1 mb-3">
+<span class="font-mono text-[10px] text-muted-grey uppercase">USAPL</span>
+<span class="font-mono text-[10px] text-muted-grey uppercase">Salt Lake City, UT</span>
+</div>
+<div class="flex items-center gap-2 bg-background-dark border-thin p-2 w-max">
+<span class="material-symbols-outlined text-muted-grey text-[14px]">timer</span>
+<span class="font-mono text-xs font-bold text-muted-grey">42:12:00:00</span>
+</div>
+</a>
+<!-- Meet Item -->
+<a class="group block p-4 hover:bg-background-dark transition-colors" href="#">
+<div class="flex justify-between items-start mb-2">
+<h4 class="font-display text-xl text-text-light group-hover:text-primary transition-colors uppercase leading-none">GHOST CLASH 3</h4>
+</div>
+<div class="flex flex-col gap-1 mb-3">
+<span class="font-mono text-[10px] text-muted-grey uppercase">WRPF</span>
+<span class="font-mono text-[10px] text-muted-grey uppercase">Miami, FL</span>
+</div>
+<div class="flex items-center gap-2 bg-background-dark border-thin p-2 w-max">
+<span class="material-symbols-outlined text-muted-grey text-[14px]">timer</span>
+<span class="font-mono text-xs font-bold text-muted-grey">85:06:30:00</span>
+</div>
+</a>
+<div class="p-3 bg-background-dark border-t-thin text-center">
+<a class="font-mono text-[10px] text-primary hover:text-text-light transition-colors uppercase font-bold tracking-widest" href="#">VIEW FULL CALENDAR →</a>
+</div>
+</div>
+</aside>
+</main>
+</body></html>

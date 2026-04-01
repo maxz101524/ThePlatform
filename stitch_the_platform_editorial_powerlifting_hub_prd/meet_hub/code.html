@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Meet Hub - The Platform</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Chivo:wght@400;700&amp;family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#FF5722",
+                        "background-light": "#EBEBEB",
+                        "background-dark": "#161618",
+                        "surface": "#232326",
+                        "text-main": "#EBEBEB",
+                        "text-muted": "#85858B",
+                        "accent": "#FFC107"
+                    },
+                    fontFamily: {
+                        "display": ["Anton", "sans-serif"],
+                        "body": ["Chivo", "sans-serif"],
+                        "mono": ["Space Mono", "monospace"]
+                    },
+                    borderRadius: { "DEFAULT": "0px", "lg": "0px", "xl": "0px", "full": "0px" },
+                    borderWidth: {
+                        "thin": "1px"
+                    },
+                    borderColor: {
+                        "thin": "#85858B"
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Chivo', sans-serif;
+            background-color: #161618;
+            color: #EBEBEB;
+        }
+        h1, h2, h3, .font-display {
+            font-family: 'Anton', sans-serif;
+            text-transform: uppercase;
+        }
+        .font-mono {
+            font-family: 'Space Mono', monospace;
+        }
+        
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #161618;
+            border-left: 1px solid #85858B;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #85858B;
+            border: 1px solid #161618;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #FF5722;
+        }
+        
+        .blinking-dot {
+            animation: blinker 1.5s linear infinite;
+        }
+        @keyframes blinker {
+            50% { opacity: 0; }
+        }
+
+        .plate-red { background-color: #D32F2F; border: 1px solid #B71C1C; }
+        .plate-blue { background-color: #1976D2; border: 1px solid #0D47A1; }
+        .plate-yellow { background-color: #FBC02D; border: 1px solid #F57F17; }
+        .plate-green { background-color: #388E3C; border: 1px solid #1B5E20; }
+        .plate-black { background-color: #212121; border: 1px solid #000000; }
+        .plate-metal { background-color: #9E9E9E; border: 1px solid #616161; }
+    </style>
+</head>
+<body class="bg-background-dark min-h-screen flex flex-col antialiased selection:bg-primary selection:text-white overflow-x-hidden">
+<!-- TopNavBar -->
+<div class="relative flex h-auto w-full flex-col bg-background-dark border-b border-thin group/design-root z-50">
+<header class="flex items-center justify-between whitespace-nowrap px-6 py-4">
+<div class="flex items-center gap-4 text-text-main hover:text-primary transition-colors cursor-pointer">
+<div class="size-6">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M39.475 21.6262C40.358 21.4363 40.6863 21.5589 40.7581 21.5934C40.7876 21.655 40.8547 21.857 40.8082 22.3336C40.7408 23.0255 40.4502 24.0046 39.8572 25.2301C38.6799 27.6631 36.5085 30.6631 33.5858 33.5858C30.6631 36.5085 27.6632 38.6799 25.2301 39.8572C24.0046 40.4502 23.0255 40.7407 22.3336 40.8082C21.8571 40.8547 21.6551 40.7875 21.5934 40.7581C21.5589 40.6863 21.4363 40.358 21.6262 39.475C21.8562 38.4054 22.4689 36.9657 23.5038 35.2817C24.7575 33.2417 26.5497 30.9744 28.7621 28.762C30.9744 26.5497 33.2417 24.7574 35.2817 23.5037C36.9657 22.4689 38.4054 21.8562 39.475 21.6262ZM4.41189 29.2403L18.7597 43.5881C19.8813 44.7097 21.4027 44.9179 22.7217 44.7893C24.0585 44.659 25.5148 44.1631 26.9723 43.4579C29.9052 42.0387 33.2618 39.5667 36.4142 36.4142C39.5667 33.2618 42.0387 29.9052 43.4579 26.9723C44.1631 25.5148 44.659 24.0585 44.7893 22.7217C44.9179 21.4027 44.7097 19.8813 43.5881 18.7597L29.2403 4.41187C27.8527 3.02428 25.8765 3.02573 24.2861 3.36776C22.6081 3.72863 20.7334 4.58419 18.8396 5.74801C16.4978 7.18716 13.9881 9.18353 11.5858 11.5858C9.18354 13.988 7.18717 16.4978 5.74802 18.8396C4.58421 20.7334 3.72865 22.6081 3.36778 24.2861C3.02574 25.8765 3.02429 27.8527 4.41189 29.2403Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+<h2 class="font-display text-2xl tracking-wide">The Platform</h2>
+</div>
+<nav class="flex items-center gap-8 hidden md:flex">
+<a class="text-text-muted hover:text-text-main text-sm font-bold uppercase tracking-widest transition-colors" href="#">The Feed</a>
+<a class="text-text-muted hover:text-text-main text-sm font-bold uppercase tracking-widest transition-colors" href="#">Leaderboard</a>
+<a class="text-primary text-sm font-bold uppercase tracking-widest border-b-2 border-primary pb-1" href="#">Meet Hub</a>
+</nav>
+<button class="md:hidden text-text-main">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+</header>
+</div>
+<main class="flex-1 flex flex-col lg:flex-row w-full max-w-[1920px] mx-auto p-4 lg:p-6 gap-6">
+<!-- Left Column: Event Header & Stream (65%) -->
+<div class="w-full lg:w-[65%] flex flex-col gap-6">
+<!-- Event Header -->
+<div class="flex flex-wrap items-end justify-between border-b border-thin pb-4 gap-4">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-3">
+<div class="w-3 h-3 bg-red-600 rounded-full blinking-dot"></div>
+<span class="text-red-500 font-mono text-sm font-bold tracking-widest uppercase">Live Now</span>
+</div>
+<h1 class="font-display text-5xl lg:text-7xl text-text-main leading-none">SHEFFIELD 2024</h1>
+<p class="text-text-muted font-mono text-sm uppercase mt-2">Men's 120kg+ Flight A • Round 3 Squats</p>
+</div>
+<div class="flex gap-2">
+<button class="bg-surface border border-thin text-text-main px-4 py-2 font-mono text-xs uppercase hover:bg-white hover:text-black transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]" data-icon="share">share</span> Share
+                    </button>
+<button class="bg-surface border border-thin text-text-main px-4 py-2 font-mono text-xs uppercase hover:bg-white hover:text-black transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]" data-icon="open_in_new">open_in_new</span> External
+                    </button>
+</div>
+</div>
+<!-- Stream Embed -->
+<div class="w-full aspect-video bg-black border border-thin relative group">
+<!-- Placeholder for iframe/video -->
+<div class="absolute inset-0 bg-zinc-900 flex items-center justify-center bg-cover bg-center" data-alt="Powerlifting stage background" style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.8)), url('https://lh3.googleusercontent.com/aida-public/AB6AXuD0HAQknoJ2FVvv-6aIh64YowlBQsysCLsT6TEQBeaLpB-PDnyk8tAWM2KaZNXbzh7CXh6QYOhhLYMXA8iGSXxxklxgiXuIDlaCsmZiyufMsxP7RNa3yAhxt5PkLIg1SsxLklP1QH12joxDr1XqVrHR1j4ijfj28Baqtp75ivX96HHMDH6Oji6qK0JMtqYISAW_zWFC_abuDqg3Qc4gXgqPzGj12OPTt2rkRqi2nOZOhL652uJPIcoI6S5o69_ltdIj7DMC6Vcn-OA');">
+<button class="w-20 h-20 bg-primary/90 text-white flex items-center justify-center hover:bg-primary hover:scale-105 transition-all z-10">
+<span class="material-symbols-outlined text-4xl" data-icon="play_arrow">play_arrow</span>
+</button>
+</div>
+<!-- Overlay Stream Stats -->
+<div class="absolute top-4 left-4 bg-black/80 border border-thin px-3 py-1 flex items-center gap-2 backdrop-blur-sm pointer-events-none z-10">
+<span class="material-symbols-outlined text-red-500 text-[14px]" data-icon="visibility">visibility</span>
+<span class="font-mono text-xs text-white">42,891 viewers</span>
+</div>
+</div>
+<!-- Contextual News / Commentary -->
+<div class="bg-surface border border-thin p-4 flex gap-4 items-start">
+<div class="w-10 h-10 bg-primary flex-shrink-0 flex items-center justify-center text-white font-display text-xl">
+                    C
+                </div>
+<div>
+<h3 class="font-bold text-text-main uppercase text-sm mb-1">Commentary Desk</h3>
+<p class="text-text-muted text-sm leading-relaxed">Olivares needs this 475kg squat to secure a lead over Williams heading into bench. The energy in the room is electric. He missed this weight at his last meet due to depth.</p>
+</div>
+</div>
+</div>
+<!-- Right Column: Flight Board & Current Lifter (35%) -->
+<div class="w-full lg:w-[35%] flex flex-col gap-6">
+<!-- Current Lifter Card -->
+<div class="bg-surface border-2 border-primary p-5 flex flex-col gap-4 relative overflow-hidden">
+<!-- Watermark -->
+<div class="absolute -right-4 -bottom-4 font-display text-8xl text-white/5 pointer-events-none select-none">
+                    475
+                </div>
+<div class="flex justify-between items-start z-10">
+<div>
+<span class="text-primary font-mono text-xs font-bold uppercase tracking-widest mb-1 block">On The Platform</span>
+<h2 class="font-display text-4xl text-white leading-none mb-1">JESUS OLIVARES</h2>
+<p class="text-text-muted font-mono text-xs uppercase">120kg+ • USAPL • BW: 175.2kg</p>
+</div>
+<div class="text-right">
+<span class="block font-mono text-text-muted text-xs uppercase mb-1">Attempt 3</span>
+<span class="font-mono text-3xl text-white font-bold bg-black px-2 py-1 border border-thin">475<span class="text-lg text-text-muted">KG</span></span>
+</div>
+</div>
+<!-- Bar Loaded Graphic -->
+<div class="mt-4 border-t border-thin pt-4 z-10">
+<span class="text-text-muted font-mono text-[10px] uppercase block mb-2">Bar Loaded (One Side)</span>
+<div class="flex items-center h-12 bg-[#111] border border-thin px-2 w-full relative">
+<!-- Sleeve -->
+<div class="w-full h-3 bg-zinc-300 mx-1 relative z-0 flex items-center">
+<div class="w-4 h-6 bg-zinc-400 absolute left-0 z-10 border-r border-zinc-500"></div> <!-- Collar -->
+<!-- Plates (25kg Red x 8, 2.5kg x 1, collar) per side for 475kg (20kg bar) -->
+<!-- (475 - 20) / 2 = 227.5kg per side -->
+<!-- 227.5 = 9 * 25kg (225) + 2.5kg -->
+<div class="flex items-center ml-4 gap-[1px] z-20 h-10">
+<div class="w-3 h-10 plate-red"></div>
+<div class="w-3 h-10 plate-red"></div>
+<div class="w-3 h-10 plate-red"></div>
+<div class="w-3 h-10 plate-red"></div>
+<div class="w-3 h-10 plate-red"></div>
+<div class="w-3 h-10 plate-red"></div>
+<div class="w-3 h-10 plate-red"></div>
+<div class="w-3 h-10 plate-red"></div>
+<div class="w-3 h-10 plate-red"></div>
+<!-- 2.5kg -->
+<div class="w-1.5 h-6 plate-black"></div>
+<!-- Collar -->
+<div class="w-2 h-4 plate-metal ml-1"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Referee Lights Standby -->
+<div class="flex justify-center gap-4 mt-2 z-10">
+<div class="w-4 h-4 rounded-full border border-thin bg-[#111]"></div>
+<div class="w-4 h-4 rounded-full border border-thin bg-[#111]"></div>
+<div class="w-4 h-4 rounded-full border border-thin bg-[#111]"></div>
+</div>
+</div>
+<!-- Flight Board -->
+<div class="flex-1 flex flex-col bg-surface border border-thin">
+<div class="flex items-center justify-between p-3 border-b border-thin bg-black/40">
+<h3 class="font-bold text-text-main uppercase text-sm tracking-wider">Flight A • Squat</h3>
+<div class="flex gap-2">
+<button class="text-text-muted hover:text-white"><span class="material-symbols-outlined text-[18px]" data-icon="filter_list">filter_list</span></button>
+</div>
+</div>
+<!-- Table Header -->
+<div class="grid grid-cols-[20px_1fr_60px_60px_60px] gap-2 px-3 py-2 border-b border-thin font-mono text-[10px] text-text-muted uppercase">
+<div>#</div>
+<div>Lifter</div>
+<div class="text-center">1st</div>
+<div class="text-center">2nd</div>
+<div class="text-center">3rd</div>
+</div>
+<!-- Flight List -->
+<div class="flex-1 overflow-y-auto">
+<!-- Row 1: Completed -->
+<div class="grid grid-cols-[20px_1fr_60px_60px_60px] gap-2 px-3 py-3 border-b border-thin/50 items-center hover:bg-[#2a2a2e] transition-colors cursor-pointer group">
+<div class="font-mono text-xs text-text-muted">1</div>
+<div>
+<span class="font-bold text-sm text-text-main group-hover:text-primary transition-colors">Ashton Rouska</span>
+<span class="block font-mono text-[10px] text-text-muted">BW: 104.5kg</span>
+</div>
+<div class="text-center font-mono text-xs text-white relative">
+                            360
+                            <div class="absolute bottom-[-4px] left-1/2 -translate-x-1/2 flex gap-[2px]">
+<div class="w-1 h-1 bg-green-500 rounded-full"></div>
+<div class="w-1 h-1 bg-green-500 rounded-full"></div>
+<div class="w-1 h-1 bg-green-500 rounded-full"></div>
+</div>
+</div>
+<div class="text-center font-mono text-xs text-white relative">
+                            370
+                            <div class="absolute bottom-[-4px] left-1/2 -translate-x-1/2 flex gap-[2px]">
+<div class="w-1 h-1 bg-green-500 rounded-full"></div>
+<div class="w-1 h-1 bg-green-500 rounded-full"></div>
+<div class="w-1 h-1 bg-green-500 rounded-full"></div>
+</div>
+</div>
+<div class="text-center font-mono text-xs text-text-muted line-through relative">
+                            380
+                            <div class="absolute bottom-[-4px] left-1/2 -translate-x-1/2 flex gap-[2px]">
+<div class="w-1 h-1 bg-red-500 rounded-full"></div>
+<div class="w-1 h-1 bg-red-500 rounded-full"></div>
+<div class="w-1 h-1 bg-red-500 rounded-full"></div>
+</div>
+</div>
+</div>
+<!-- Row 2: Completed -->
+<div class="grid grid-cols-[20px_1fr_60px_60px_60px] gap-2 px-3 py-3 border-b border-thin/50 items-center hover:bg-[#2a2a2e] transition-colors cursor-pointer group">
+<div class="font-mono text-xs text-text-muted">2</div>
+<div>
+<span class="font-bold text-sm text-text-main group-hover:text-primary transition-colors">John Haack</span>
+<span class="block font-mono text-[10px] text-text-muted">BW: 89.8kg</span>
+</div>
+<div class="text-center font-mono text-xs text-white relative">
+                            340
+                            <div class="absolute bottom-[-4px] left-1/2 -translate-x-1/2 flex gap-[2px]">
+<div class="w-1 h-1 bg-green-500 rounded-full"></div>
+<div class="w-1 h-1 bg-green-500 rounded-full"></div>
+<div class="w-1 h-1 bg-green-500 rounded-full"></div>
+</div>
+</div>
+<div class="text-center font-mono text-xs text-white relative">
+                            350
+                            <div class="absolute bottom-[-4px] left-1/2 -translate-x-1/2 flex gap-[2px]">
+<div class="w-1 h-1 bg-green-500 rounded-full"></div>
+<div class="w-1 h-1 bg-green-500 rounded-full"></div>
+<div class="w-1 h-1 bg-green-500 rounded-full"></div>
+</div>
+</div>
+<div class="text-center font-mono text-xs text-text-muted line-through relative">
+                            360
+                            <div class="absolute bottom-[-4px] left-1/2 -translate-x-1/2 flex gap-[2px]">
+<div class="w-1 h-1 bg-red-500 rounded-full"></div>
+<div class="w-1 h-1 bg-green-500 rounded-full"></div>
+<div class="w-1 h-1 bg-red-500 rounded-full"></div>
+</div>
+</div>
+</div>
+<!-- Row 3: Completed -->
+<div class="grid grid-cols-[20px_1fr_60px_60px_60px] gap-2 px-3 py-3 border-b border-thin/50 items-center hover:bg-[#2a2a2e] transition-colors cursor-pointer group">
+<div class="font-mono text-xs text-text-muted">3</div>
+<div>
+<span class="font-bold text-sm text-text-main group-hover:text-primary transition-colors">Dan Bell</span>
+<span class="block font-mono text-[10px] text-text-muted">BW: 168.2kg</span>
+</div>
+<div class="text-center font-mono text-xs text-white relative">
+                            430
+                            <div class="absolute bottom-[-4px] left-1/2 -translate-x-1/2 flex gap-[2px]">
+<div class="w-1 h-1 bg-green-500 rounded-full"></div>
+<div class="w-1 h-1 bg-green-500 rounded-full"></div>
+<div class="w-1 h-1 bg-green-500 rounded-full"></div>
+</div>
+</div>
+<div class="text-center font-mono text-xs text-white relative">
+                            445
+                            <div class="absolute bottom-[-4px] left-1/2 -translate-x-1/2 flex gap-[2px]">
+<div class="w-1 h-1 bg-green-500 rounded-full"></div>
+<div class="w-1 h-1 bg-green-500 rounded-full"></div>
+<div class="w-1 h-1 bg-green-500 rounded-full"></div>
+</div>
+</div>
+<div class="text-center font-mono text-xs text-white relative">
+                            455
+                            <div class="absolute bottom-[-4px] left-1/2 -translate-x-1/2 flex gap-[2px]">
+<div class="w-1 h-1 bg-green-500 rounded-full"></div>
+<div class="w-1 h-1 bg-green-500 rounded-full"></div>
+<div class="w-1 h-1 bg-green-500 rounded-full"></div>
+</div>
+</div>
+</div>
+<!-- Row 4: Current -->
+<div class="grid grid-cols-[20px_1fr_60px_60px_60px] gap-2 px-3 py-3 border-l-4 border-l-primary bg-[#2a2a2e] items-center cursor-pointer">
+<div class="font-mono text-xs text-primary font-bold">4</div>
+<div>
+<span class="font-bold text-sm text-white flex items-center gap-1">Jesus Olivares <span class="material-symbols-outlined text-[14px] text-primary" data-icon="play_arrow">play_arrow</span></span>
+<span class="block font-mono text-[10px] text-text-muted">BW: 175.2kg</span>
+</div>
+<div class="text-center font-mono text-xs text-white relative">
+                            455
+                            <div class="absolute bottom-[-4px] left-1/2 -translate-x-1/2 flex gap-[2px]">
+<div class="w-1 h-1 bg-green-500 rounded-full"></div>
+<div class="w-1 h-1 bg-green-500 rounded-full"></div>
+<div class="w-1 h-1 bg-green-500 rounded-full"></div>
+</div>
+</div>
+<div class="text-center font-mono text-xs text-white relative">
+                            470
+                            <div class="absolute bottom-[-4px] left-1/2 -translate-x-1/2 flex gap-[2px]">
+<div class="w-1 h-1 bg-green-500 rounded-full"></div>
+<div class="w-1 h-1 bg-green-500 rounded-full"></div>
+<div class="w-1 h-1 bg-green-500 rounded-full"></div>
+</div>
+</div>
+<div class="text-center font-mono text-sm text-primary font-bold animate-pulse border border-primary bg-black/50 py-1">
+                            475
+                        </div>
+</div>
+<!-- Row 5: Up Next -->
+<div class="grid grid-cols-[20px_1fr_60px_60px_60px] gap-2 px-3 py-3 border-b border-thin/50 items-center hover:bg-[#2a2a2e] transition-colors cursor-pointer group opacity-70">
+<div class="font-mono text-xs text-text-muted">5</div>
+<div>
+<span class="font-bold text-sm text-text-main group-hover:text-primary transition-colors">Ray Williams</span>
+<span class="block font-mono text-[10px] text-text-muted">BW: 180.5kg</span>
+</div>
+<div class="text-center font-mono text-xs text-white relative">
+                            440
+                            <div class="absolute bottom-[-4px] left-1/2 -translate-x-1/2 flex gap-[2px]">
+<div class="w-1 h-1 bg-green-500 rounded-full"></div>
+<div class="w-1 h-1 bg-green-500 rounded-full"></div>
+<div class="w-1 h-1 bg-green-500 rounded-full"></div>
+</div>
+</div>
+<div class="text-center font-mono text-xs text-text-muted line-through relative">
+                            455
+                            <div class="absolute bottom-[-4px] left-1/2 -translate-x-1/2 flex gap-[2px]">
+<div class="w-1 h-1 bg-red-500 rounded-full"></div>
+<div class="w-1 h-1 bg-red-500 rounded-full"></div>
+<div class="w-1 h-1 bg-red-500 rounded-full"></div>
+</div>
+</div>
+<div class="text-center font-mono text-xs text-text-muted bg-[#111] py-1 border border-thin">
+                            460
+                        </div>
+</div>
+</div>
+<!-- Legend -->
+<div class="p-2 border-t border-thin bg-black/40 flex justify-center gap-6 font-mono text-[10px] text-text-muted uppercase">
+<span class="flex items-center gap-1"><div class="w-2 h-2 bg-green-500 rounded-full"></div> Good Lift</span>
+<span class="flex items-center gap-1"><div class="w-2 h-2 bg-red-500 rounded-full"></div> No Lift</span>
+</div>
+</div>
+</div>
+</main>
+</body></html>
