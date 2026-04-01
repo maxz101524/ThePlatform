@@ -1,8 +1,8 @@
 "use client";
 
-import { Card } from "@/components/ui/card";
 import { VoteButtons } from "./vote-buttons";
 import { getTimeAgo } from "@/lib/utils";
+import { getAvatarColor, getAvatarInitial } from "@/lib/avatar";
 import Link from "next/link";
 
 interface PostCardProps {
@@ -20,39 +20,72 @@ export function PostCard({ postId, username, bodyText, linkUrl, linkPreview, vot
   const timeAgo = getTimeAgo(createdAt);
 
   return (
-    <Card className="space-y-3">
-      <Link href={`/post/${postId}`} className="block space-y-3">
-        <div className="flex items-center gap-2">
-          <span className="font-heading text-sm font-bold text-zinc-900 uppercase">{username}</span>
-          <span className="text-zinc-300">·</span>
-          <span className="font-mono text-[10px] text-zinc-500 uppercase">{timeAgo}</span>
-        </div>
-        <p className="text-sm text-zinc-700 leading-relaxed">{bodyText}</p>
-      </Link>
-      {linkPreview && (
-        <a
-          href={linkUrl || "#"}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="border border-zinc-100 rounded-xl overflow-hidden flex bg-zinc-50 hover:bg-zinc-100 transition-colors"
-        >
-          {linkPreview.thumbnail && (
-            <img src={linkPreview.thumbnail} alt="" className="h-16 w-24 object-cover" />
-          )}
-          <div className="flex-1 min-w-0 p-3">
-            <p className="text-sm font-bold text-zinc-900 truncate">{linkPreview.title}</p>
-            <p className="text-xs text-zinc-500 truncate">{linkPreview.description}</p>
-            <p className="text-xs text-zinc-400 mt-1">{linkPreview.domain}</p>
+    <article className="px-4 py-4 hover:bg-white/[0.02] transition-colors">
+      <div className="flex gap-3">
+        {/* Avatar */}
+        <Link href={`/u/${username}`} className="shrink-0">
+          <div
+            className="w-10 h-10 rounded-full flex items-center justify-center text-white font-heading font-bold text-sm"
+            style={{ backgroundColor: getAvatarColor(username) }}
+          >
+            {getAvatarInitial(username)}
           </div>
-        </a>
-      )}
-      <div className="flex items-center gap-4 text-xs text-zinc-500">
-        <VoteButtons postId={postId} voteCount={voteCount} />
-        <Link href={`/post/${postId}`} className="hover:text-accent-red transition-colors">
-          💬 {commentCount}
         </Link>
+
+        {/* Content */}
+        <div className="min-w-0 flex-1 space-y-2">
+          <Link href={`/post/${postId}`} className="block space-y-2">
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span className="font-heading text-[15px] font-bold text-white">{username}</span>
+              <span className="text-zinc-600 text-xs">@{username}</span>
+              <span className="text-zinc-600">&middot;</span>
+              <span className="font-mono text-xs text-zinc-500">{timeAgo}</span>
+            </div>
+            <p className="text-[15px] text-zinc-300 leading-relaxed">{bodyText}</p>
+          </Link>
+
+          {linkPreview && (
+            <a
+              href={linkUrl || "#"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block border border-white/10 rounded-xl overflow-hidden bg-bg-dark-subtle hover:bg-bg-dark-elevated transition-colors"
+            >
+              {linkPreview.thumbnail && (
+                <img src={linkPreview.thumbnail} alt="" className="w-full h-32 object-cover" />
+              )}
+              <div className="p-3 space-y-0.5">
+                <p className="text-xs text-zinc-500">{linkPreview.domain}</p>
+                <p className="text-sm font-bold text-white truncate">{linkPreview.title}</p>
+                {linkPreview.description && (
+                  <p className="text-xs text-zinc-400 line-clamp-2">{linkPreview.description}</p>
+                )}
+              </div>
+            </a>
+          )}
+
+          {/* Action bar */}
+          <div className="flex items-center gap-6 pt-1 -ml-2">
+            <VoteButtons postId={postId} voteCount={voteCount} />
+            <Link
+              href={`/post/${postId}`}
+              className="flex items-center gap-1.5 text-zinc-500 hover:text-accent-blue transition-colors group"
+            >
+              <svg className="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+              </svg>
+              <span className="text-xs font-mono">{commentCount}</span>
+            </Link>
+            <button className="text-zinc-500 hover:text-accent-green transition-colors" aria-label="Share">
+              <svg className="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+                <polyline points="16 6 12 2 8 6" />
+                <line x1="12" y1="2" x2="12" y2="15" />
+              </svg>
+            </button>
+          </div>
+        </div>
       </div>
-    </Card>
+    </article>
   );
 }
-

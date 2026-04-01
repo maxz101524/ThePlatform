@@ -63,108 +63,99 @@ export default async function FeedPage({
   ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   return (
-    <div className="bg-bg-light min-h-screen -mx-4 -mt-4 pb-20 md:pb-6">
-      <div className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 gap-6 lg:grid-cols-[240px_1fr_280px]">
-        {/* Left column — Notable Results */}
-        <aside className="hidden lg:block bg-bg-dark text-text-on-dark p-6 rounded-xl sticky top-24 h-[calc(100vh-120px)] overflow-y-auto space-y-4">
-          <h2 className="font-heading text-xl font-bold text-white tracking-tight uppercase">
-            NOTABLE RESULTS
-          </h2>
-          {notableResults.map((entry) => (
-            <div key={entry.id} className="bg-bg-dark-elevated p-4 border-l-2 border-accent-yellow hover:bg-bg-dark-subtle transition-all">
-              <div className="flex justify-between items-start mb-2">
-                <span className="font-heading text-xs tracking-widest text-zinc-500 uppercase">{entry.federation}</span>
-                <span className="font-mono text-[10px] text-zinc-600">{entry.meet_date}</span>
-              </div>
-              <p className="font-display text-sm font-semibold text-white uppercase">{entry.lifter_name}</p>
-              <div className="flex items-baseline gap-2 mt-1">
-                <span className="font-mono text-2xl font-bold text-accent-yellow tracking-tighter">{entry.total}</span>
-                <span className="font-mono text-[10px] text-zinc-500 uppercase">KG TOTAL</span>
-              </div>
-              <div className="mt-3 grid grid-cols-3 gap-1 text-center">
-                <div className="bg-zinc-900/80 py-1">
-                  <span className="block font-mono text-xs text-white">{entry.best_squat?.toFixed(1) ?? "—"}</span>
-                  <span className="text-[8px] font-heading text-zinc-500 uppercase">SQ</span>
-                </div>
-                <div className="bg-zinc-900/80 py-1">
-                  <span className="block font-mono text-xs text-white">{entry.best_bench?.toFixed(1) ?? "—"}</span>
-                  <span className="text-[8px] font-heading text-zinc-500 uppercase">BP</span>
-                </div>
-                <div className="bg-zinc-900/80 py-1">
-                  <span className="block font-mono text-xs text-white">{entry.best_deadlift?.toFixed(1) ?? "—"}</span>
-                  <span className="text-[8px] font-heading text-zinc-500 uppercase">DL</span>
-                </div>
-              </div>
-            </div>
-          ))}
-        </aside>
-
+    <div className="bg-bg-dark min-h-screen -mx-4 -mt-4 pb-20 md:pb-6">
+      <div className="max-w-[960px] mx-auto px-4 pt-8 grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,600px)_300px]">
         {/* Center column — Feed */}
-        <div className="space-y-4">
+        <div>
           <Suspense fallback={null}>
             <FeedTabs isLoggedIn={!!user} />
           </Suspense>
-          {user && <CreatePostForm />}
-          {isFollowingTab && posts.length === 0 ? (
-            followingCount === 0 ? (
-              <Card variant="light" className="text-center py-12 space-y-6">
-                <div className="space-y-2">
-                  <p className="text-zinc-900 font-heading text-lg uppercase tracking-wider">
-                    Follow lifters to shape your feed
+          {user && <CreatePostForm username={user.profile?.username ?? user.email?.split("@")[0] ?? "U"} />}
+
+          <div className="divide-y divide-white/10">
+            {isFollowingTab && posts.length === 0 ? (
+              followingCount === 0 ? (
+                <Card variant="dark" className="text-center py-12 space-y-6">
+                  <div className="space-y-2">
+                    <p className="text-white font-heading text-lg uppercase tracking-wider">
+                      Follow lifters to shape your feed
+                    </p>
+                    <p className="text-sm text-zinc-500">
+                      Discover athletes, follow their journey, and see their posts here.
+                    </p>
+                  </div>
+                  {user && (
+                    <SuggestionsModule
+                      userId={user.id}
+                      weightClass={user.profile?.weight_class_kg}
+                      equipment={user.profile?.equipment}
+                    />
+                  )}
+                </Card>
+              ) : (
+                <Card variant="dark" className="text-center py-12">
+                  <p className="text-zinc-500">
+                    Your lifters haven&apos;t posted yet. Check out{" "}
+                    <Link href="/" className="text-accent-red hover:underline">
+                      For You
+                    </Link>{" "}
+                    in the meantime.
                   </p>
-                  <p className="text-sm text-zinc-500">
-                    Discover athletes, follow their journey, and see their posts here.
-                  </p>
-                </div>
-                {user && (
-                  <SuggestionsModule
-                    userId={user.id}
-                    weightClass={user.profile?.weight_class_kg}
-                    equipment={user.profile?.equipment}
-                  />
-                )}
+                </Card>
+              )
+            ) : feedItems.length === 0 ? (
+              <Card variant="dark" className="text-center py-12">
+                <p className="text-zinc-500">No content yet. Check back soon!</p>
               </Card>
             ) : (
-              <Card variant="light" className="text-center py-12">
-                <p className="text-zinc-500">
-                  Your lifters haven&apos;t posted yet. Check out{" "}
-                  <Link href="/" className="text-accent-red hover:underline">
-                    For You
-                  </Link>{" "}
-                  in the meantime.
-                </p>
-              </Card>
-            )
-          ) : feedItems.length === 0 ? (
-            <Card variant="light" className="text-center py-12">
-              <p className="text-zinc-500">No content yet. Check back soon!</p>
-            </Card>
-          ) : (
-            feedItems.map((item) =>
-              item.type === "post" ? (
-                <PostCard
-                  key={`post-${(item.data as Post).id}`}
-                  postId={(item.data as Post).id}
-                  username={(item.data as Post).profiles.username}
-                  bodyText={(item.data as Post).body_text}
-                  linkUrl={(item.data as Post).link_url}
-                  linkPreview={(item.data as Post).link_preview}
-                  voteCount={(item.data as Post).vote_count}
-                  commentCount={(item.data as Post).comment_count}
-                  createdAt={(item.data as Post).created_at}
-                />
-              ) : (
-                <AggregatedContentCard
-                  key={`content-${(item.data as AggregatedContent).id}`}
-                  {...(item.data as AggregatedContent)}
-                />
+              feedItems.map((item) =>
+                item.type === "post" ? (
+                  <PostCard
+                    key={`post-${(item.data as Post).id}`}
+                    postId={(item.data as Post).id}
+                    username={(item.data as Post).profiles.username}
+                    bodyText={(item.data as Post).body_text}
+                    linkUrl={(item.data as Post).link_url}
+                    linkPreview={(item.data as Post).link_preview}
+                    voteCount={(item.data as Post).vote_count}
+                    commentCount={(item.data as Post).comment_count}
+                    createdAt={(item.data as Post).created_at}
+                  />
+                ) : (
+                  <AggregatedContentCard
+                    key={`content-${(item.data as AggregatedContent).id}`}
+                    {...(item.data as AggregatedContent)}
+                  />
+                )
               )
-            )
-          )}
+            )}
+          </div>
         </div>
 
-        {/* Right column — Suggestions + Trending */}
-        <aside className="hidden lg:block space-y-6">
+        {/* Right sidebar */}
+        <aside className="hidden lg:block space-y-5 sticky top-24 self-start max-h-[calc(100vh-120px)] overflow-y-auto">
+          {/* Notable Results — compact */}
+          {notableResults.length > 0 && (
+            <div className="bg-bg-dark-elevated rounded-xl border border-white/10 p-4 space-y-3">
+              <h3 className="font-heading text-xs tracking-[0.2em] font-bold text-zinc-500 uppercase">
+                Notable Results
+              </h3>
+              {notableResults.slice(0, 3).map((entry) => (
+                <div key={entry.id} className="flex items-center justify-between gap-2 py-1.5">
+                  <div className="min-w-0">
+                    <p className="font-heading text-xs font-bold text-white uppercase truncate">{entry.lifter_name}</p>
+                    <p className="font-mono text-[10px] text-zinc-500 uppercase">{entry.federation}</p>
+                  </div>
+                  <span className="font-mono text-sm font-bold text-accent-yellow shrink-0">{entry.total}kg</span>
+                </div>
+              ))}
+              <Link href="/leaderboard" className="block text-xs text-zinc-500 hover:text-zinc-300 transition-colors pt-1">
+                See full leaderboard &rarr;
+              </Link>
+            </div>
+          )}
+
+          {/* Who to Follow */}
           {user && (
             <SuggestionsModule
               userId={user.id}
@@ -172,23 +163,38 @@ export default async function FeedPage({
               equipment={user.profile?.equipment}
             />
           )}
-          <div className="space-y-4">
-            <h2 className="font-heading text-xs tracking-[0.2em] font-bold text-zinc-400 uppercase">
-              Trending Content
-            </h2>
-            {content.slice(0, 3).map((c) => (
-              <div key={c.id} className="group cursor-pointer">
-                <a
-                  href={c.source_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-heading text-sm font-bold text-zinc-900 group-hover:text-accent-red transition-colors leading-tight line-clamp-2 block"
-                >
-                  {c.title}
-                </a>
-                <p className="font-mono text-[10px] text-zinc-500 uppercase mt-1">{c.content_sources.creator_name}</p>
-              </div>
-            ))}
+
+          {/* Trending Content — numbered list */}
+          {content.length > 0 && (
+            <div className="bg-bg-dark-elevated rounded-xl border border-white/10 p-4 space-y-3">
+              <h3 className="font-heading text-xs tracking-[0.2em] font-bold text-zinc-500 uppercase">
+                Trending
+              </h3>
+              {content.slice(0, 5).map((c, i) => (
+                <div key={c.id} className="flex gap-3 group">
+                  <span className="font-mono text-sm font-bold text-zinc-600 mt-0.5">{i + 1}</span>
+                  <div className="min-w-0">
+                    <a
+                      href={c.source_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-heading text-xs font-bold text-white group-hover:text-accent-red transition-colors leading-snug line-clamp-2 block"
+                    >
+                      {c.title}
+                    </a>
+                    <p className="font-mono text-[10px] text-zinc-500 uppercase mt-0.5">{c.content_sources.creator_name}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Footer links */}
+          <div className="text-[10px] text-zinc-600 flex flex-wrap gap-x-3 gap-y-1 px-1">
+            <span>About</span>
+            <span>Terms</span>
+            <span>Privacy</span>
+            <span>&copy; {new Date().getFullYear()} The Platform</span>
           </div>
         </aside>
       </div>

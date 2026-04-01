@@ -7,6 +7,8 @@ import { StatsBar } from "@/components/profile/stats-bar";
 import { MediaShowcase } from "@/components/profile/media-showcase";
 import { CompetitionHistory } from "@/components/profile/competition-history";
 import { PostCard } from "@/components/content/post-card";
+import { ProfileTabs } from "@/components/profile/profile-tabs";
+import { Suspense } from "react";
 
 export const dynamic = "force-dynamic";
 
@@ -24,10 +26,12 @@ function postKey(
 
 interface Props {
   params: Promise<{ username: string }>;
+  searchParams: Promise<{ tab?: string }>;
 }
 
-export default async function ProfilePage({ params }: Props) {
+export default async function ProfilePage({ params, searchParams }: Props) {
   const { username } = await params;
+  const { tab = "posts" } = await searchParams;
   const profile = await getProfileByUsername(username);
   if (!profile) notFound();
 
@@ -45,7 +49,7 @@ export default async function ProfilePage({ params }: Props) {
 
   return (
     <>
-      {/* Dark Hero — break out of layout's max-w container */}
+      {/* Dark Hero */}
       <div className="-mx-4 -mt-4 bg-bg-dark pt-20 pb-16 px-6 md:px-12">
         <div className="max-w-7xl mx-auto space-y-8">
           <ProfileHeader
@@ -58,41 +62,51 @@ export default async function ProfilePage({ params }: Props) {
         </div>
       </div>
 
-      {/* Light Content — break out of layout's max-w container */}
-      <div className="-mx-4 bg-bg-light min-h-[500px]">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 space-y-16">
-          {/* Media */}
-          <MediaShowcase media={media} isOwnProfile={isOwnProfile} />
+      {/* Tabs */}
+      <div className="-mx-4 bg-bg-dark">
+        <div className="max-w-7xl mx-auto">
+          <Suspense fallback={null}>
+            <ProfileTabs username={username} />
+          </Suspense>
+        </div>
+      </div>
 
-          {/* Competition History */}
-          <section>
-            <h2 className="font-heading text-3xl font-black uppercase tracking-tighter text-zinc-900 mb-8">
-              Competition History
-            </h2>
-            <CompetitionHistory results={results} />
-          </section>
-
-          {/* Posts */}
-          {posts.length > 0 && (
+      {/* Tab Content */}
+      <div className="-mx-4 bg-bg-dark min-h-[400px]">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 py-12">
+          {tab === "posts" && (
             <section>
-              <h2 className="font-heading text-3xl font-black uppercase tracking-tighter text-zinc-900 mb-8">
-                Posts
-              </h2>
-              <div className="space-y-4">
-                {posts.map((post, index) => (
-                  <PostCard
-                    key={postKey(post, index)}
-                    postId={post.id}
-                    username={post.profiles.username}
-                    bodyText={post.body_text}
-                    linkUrl={post.link_url}
-                    linkPreview={post.link_preview}
-                    voteCount={post.vote_count}
-                    commentCount={post.comment_count}
-                    createdAt={post.created_at}
-                  />
-                ))}
-              </div>
+              {posts.length > 0 ? (
+                <div className="max-w-[600px] divide-y divide-white/10">
+                  {posts.map((post, index) => (
+                    <PostCard
+                      key={postKey(post, index)}
+                      postId={post.id}
+                      username={post.profiles.username}
+                      bodyText={post.body_text}
+                      linkUrl={post.link_url}
+                      linkPreview={post.link_preview}
+                      voteCount={post.vote_count}
+                      commentCount={post.comment_count}
+                      createdAt={post.created_at}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <p className="text-zinc-500 text-sm py-8">
+                  {isOwnProfile ? "You haven't posted anything yet." : "No posts yet."}
+                </p>
+              )}
+            </section>
+          )}
+
+          {tab === "media" && (
+            <MediaShowcase media={media} isOwnProfile={isOwnProfile} />
+          )}
+
+          {tab === "competition" && (
+            <section>
+              <CompetitionHistory results={results} />
             </section>
           )}
         </div>

@@ -23,11 +23,11 @@ export default async function PostDetailPage({
   if (!post) notFound();
 
   return (
-    <div className="bg-bg-light min-h-screen -mx-4 -mt-4 pb-20 md:pb-6">
+    <div className="bg-bg-dark min-h-screen -mx-4 -mt-4 pb-20 md:pb-6">
       <div className="max-w-2xl mx-auto space-y-4">
         <Link
           href="/"
-          className="text-sm text-zinc-500 hover:text-zinc-900 transition-colors"
+          className="text-sm text-zinc-500 hover:text-white transition-colors"
         >
           &larr; Back to feed
         </Link>
@@ -43,7 +43,7 @@ export default async function PostDetailPage({
           createdAt={post.created_at}
         />
 
-        <Card className="space-y-4">
+        <Card variant="dark" className="space-y-4">
           <h2 className="font-heading text-sm uppercase tracking-wider text-zinc-500">
             Comments ({post.comment_count})
           </h2>

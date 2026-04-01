@@ -10,10 +10,10 @@ interface LeaderboardTableProps {
 
 export function LeaderboardTable({ entries, sortBy, startRank }: LeaderboardTableProps) {
   return (
-    <div className="overflow-x-auto rounded-xl">
+    <div className="overflow-x-auto rounded-xl max-h-[75vh] overflow-y-auto">
       <table className="w-full text-sm">
-        <thead>
-          <tr className="text-left">
+        <thead className="sticky top-0 z-10 bg-bg-dark-elevated">
+          <tr className="text-left border-b border-white/10">
             <th className="px-3 py-3 font-heading text-xs uppercase tracking-widest text-zinc-500 w-12">#</th>
             <th className="px-1 py-3 font-heading text-xs uppercase tracking-widest text-zinc-500 w-12"></th>
             <th className="px-3 py-3 font-heading text-xs uppercase tracking-widest text-zinc-500">Lifter</th>

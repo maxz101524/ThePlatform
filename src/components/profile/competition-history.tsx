@@ -26,11 +26,11 @@ export function CompetitionHistory({ results }: CompetitionHistoryProps) {
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-zinc-200 overflow-hidden">
+    <div className="bg-bg-dark-elevated rounded-xl border border-white/10 overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="bg-zinc-50 border-b border-zinc-200">
+            <tr className="bg-bg-dark-subtle border-b border-white/5">
               <th className="px-3 py-3 text-left font-heading uppercase text-zinc-500 text-xs tracking-widest">Date</th>
               <th className="px-3 py-3 text-left font-heading uppercase text-zinc-500 text-xs tracking-widest">Meet</th>
               <th className="hidden md:table-cell px-3 py-3 text-left font-heading uppercase text-zinc-500 text-xs tracking-widest">Fed</th>
@@ -43,18 +43,18 @@ export function CompetitionHistory({ results }: CompetitionHistoryProps) {
               <th className="px-3 py-3 text-right font-heading uppercase text-zinc-500 text-xs tracking-widest">Place</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-zinc-100">
+          <tbody className="divide-y divide-white/5">
             {results.map((r, index) => (
-              <tr key={resultKey(r, index)} className="hover:bg-zinc-50 transition-colors">
-                <td className="px-3 py-3 text-zinc-500 whitespace-nowrap">{r.meet_date}</td>
-                <td className="px-3 py-3 font-bold text-zinc-900 max-w-[200px] truncate">{r.meet_name}</td>
+              <tr key={resultKey(r, index)} className="hover:bg-bg-dark-subtle transition-colors">
+                <td className="px-3 py-3 text-zinc-500 font-mono whitespace-nowrap">{r.meet_date}</td>
+                <td className="px-3 py-3 font-bold text-white max-w-[200px] truncate">{r.meet_name}</td>
                 <td className="hidden md:table-cell px-3 py-3 text-zinc-500">{r.federation || "—"}</td>
                 <td className="hidden md:table-cell px-3 py-3 text-right font-mono text-zinc-500">{r.bodyweight_kg?.toFixed(1) || "—"}</td>
                 <td className="px-3 py-3 text-right font-mono text-accent-red">{r.best_squat?.toFixed(1) || "—"}</td>
                 <td className="px-3 py-3 text-right font-mono text-accent-blue">{r.best_bench?.toFixed(1) || "—"}</td>
                 <td className="px-3 py-3 text-right font-mono text-accent-yellow">{r.best_deadlift?.toFixed(1) || "—"}</td>
-                <td className="px-3 py-3 text-right font-mono font-extrabold text-accent-red">{r.total?.toFixed(1) || "—"}</td>
-                <td className="hidden md:table-cell px-3 py-3 text-right font-mono text-zinc-600">{r.dots?.toFixed(2) || "—"}</td>
+                <td className="px-3 py-3 text-right font-mono font-extrabold text-accent-yellow">{r.total?.toFixed(1) || "—"}</td>
+                <td className="hidden md:table-cell px-3 py-3 text-right font-mono text-zinc-500">{r.dots?.toFixed(2) || "—"}</td>
                 <td className={`px-3 py-3 text-right font-mono ${placeColor(r.place)}`}>{r.place || "—"}</td>
               </tr>
             ))}

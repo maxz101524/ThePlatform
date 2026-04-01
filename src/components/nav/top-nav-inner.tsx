@@ -19,7 +19,7 @@ export function TopNavInner({ user }: TopNavInnerProps) {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-4 z-50 w-[95%] mx-auto rounded-full bg-white/5 backdrop-blur-[24px] border border-white/15 shadow-2xl shadow-black/50">
+    <header className="sticky top-4 z-50 w-[95%] mx-auto rounded-full bg-bg-dark border border-white/10 shadow-2xl shadow-black/50">
       <div className="flex h-14 items-center justify-between px-8">
         <div className="flex items-center gap-8">
           <Link href="/">

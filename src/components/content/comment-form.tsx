@@ -39,7 +39,7 @@ export function CommentForm({ postId, parentCommentId, onCancel, autoFocus }: Co
         placeholder={parentCommentId ? "Write a reply..." : "Write a comment..."}
         maxLength={1000}
         autoFocus={autoFocus}
-        className="w-full bg-white border border-zinc-200 rounded-lg p-3 text-sm resize-none focus:outline-none focus:border-accent-red placeholder:text-zinc-400"
+        className="w-full bg-bg-dark-elevated border border-white/10 rounded-lg p-3 text-sm text-white resize-none focus:outline-none focus:border-accent-red placeholder:text-zinc-500"
         rows={3}
       />
       {error && <p className="text-xs text-semantic-error">{error}</p>}
@@ -48,7 +48,7 @@ export function CommentForm({ postId, parentCommentId, onCancel, autoFocus }: Co
           <button
             type="button"
             onClick={onCancel}
-            className="px-3 py-1.5 text-xs text-zinc-400 hover:text-zinc-700 transition-colors"
+            className="px-3 py-1.5 text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
           >
             Cancel
           </button>

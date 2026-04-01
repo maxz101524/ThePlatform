@@ -1,4 +1,6 @@
 import type { ProfileMedia } from "@/lib/types";
+import { InstagramOfficialEmbed } from "@/components/profile/instagram-official-embed";
+import { normalizeInstagramPermalink } from "@/lib/instagram-url";
 
 interface MediaEmbedProps {
   media: ProfileMedia;
@@ -21,18 +23,6 @@ function getYouTubeId(url: string): string | null {
   }
 }
 
-/** Extract Instagram post/reel ID */
-function getInstagramPath(url: string): string | null {
-  try {
-    const u = new URL(url);
-    // Matches /p/CODE, /reel/CODE, /reels/CODE
-    const match = u.pathname.match(/\/(p|reel|reels)\/([^/?]+)/);
-    return match ? match[2] : null;
-  } catch {
-    return null;
-  }
-}
-
 /** Extract TikTok video URL for embed */
 function getTikTokUrl(url: string): string | null {
   try {
@@ -42,6 +32,38 @@ function getTikTokUrl(url: string): string | null {
   } catch {
     return null;
   }
+}
+
+function extractTikTokId(url: string): string {
+  const match = url.match(/\/video\/(\d+)/);
+  return match ? match[1] : "";
+}
+
+function platformIcon(platform: string): string {
+  switch (platform) {
+    case "youtube": return "▶";
+    case "instagram": return "◻";
+    case "tiktok": return "♪";
+    case "twitter": return "𝕏";
+    default: return "🔗";
+  }
+}
+
+function FallbackLink({ media }: { media: ProfileMedia }) {
+  return (
+    <a
+      href={media.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex items-center gap-3 border border-border bg-bg-surface rounded-lg p-4 text-sm text-text-primary hover:border-accent-red transition-colors"
+    >
+      <span className="text-lg">{platformIcon(media.platform)}</span>
+      <div className="min-w-0">
+        <p className="font-bold truncate">{media.title || media.url}</p>
+        <p className="text-xs text-text-muted">{media.platform}</p>
+      </div>
+    </a>
+  );
 }
 
 export function MediaEmbed({ media }: MediaEmbedProps) {
@@ -62,9 +84,9 @@ export function MediaEmbed({ media }: MediaEmbedProps) {
   }
 
   if (media.platform === "instagram") {
-    // Instagram blocks iframe embeds from most origins.
-    // Show a styled card that links out instead.
-    return <InstagramCard media={media} />;
+    const permalink = normalizeInstagramPermalink(media.url);
+    if (!permalink) return <FallbackLink media={media} />;
+    return <InstagramOfficialEmbed permalink={permalink} />;
   }
 
   if (media.platform === "tiktok") {
@@ -89,56 +111,4 @@ export function MediaEmbed({ media }: MediaEmbedProps) {
   }
 
   return <FallbackLink media={media} />;
-}
-
-function InstagramCard({ media }: { media: ProfileMedia }) {
-  const isReel = media.url.includes("/reel");
-  return (
-    <a
-      href={media.url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="flex flex-col items-center justify-center gap-3 bg-gradient-to-b from-[#833AB4] via-[#FD1D1D] to-[#F77737] p-8 min-h-[200px] text-white hover:opacity-90 transition-opacity"
-    >
-      <span className="text-3xl">◻</span>
-      <p className="font-heading text-sm uppercase tracking-wider">
-        {isReel ? "View Reel" : "View Post"} on Instagram
-      </p>
-      {media.title && (
-        <p className="text-xs text-white/80 text-center max-w-[200px] truncate">{media.title}</p>
-      )}
-    </a>
-  );
-}
-
-function FallbackLink({ media }: { media: ProfileMedia }) {
-  return (
-    <a
-      href={media.url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="flex items-center gap-3 border border-border bg-bg-surface p-4 text-sm text-text-primary hover:border-accent-primary transition-colors"
-    >
-      <span className="text-lg">{platformIcon(media.platform)}</span>
-      <div className="min-w-0">
-        <p className="font-bold truncate">{media.title || media.url}</p>
-        <p className="text-xs text-text-muted">{media.platform}</p>
-      </div>
-    </a>
-  );
-}
-
-function platformIcon(platform: string): string {
-  switch (platform) {
-    case "youtube": return "▶";
-    case "instagram": return "◻";
-    case "tiktok": return "♪";
-    case "twitter": return "𝕏";
-    default: return "🔗";
-  }
-}
-
-function extractTikTokId(url: string): string {
-  const match = url.match(/\/video\/(\d+)/);
-  return match ? match[1] : "";
 }

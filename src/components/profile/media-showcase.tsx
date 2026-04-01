@@ -42,13 +42,13 @@ export function MediaShowcase({ media, isOwnProfile }: MediaShowcaseProps) {
   return (
     <div>
       <div className="flex items-center justify-between mb-8">
-        <h2 className="font-heading text-3xl font-black uppercase tracking-tighter text-zinc-900">
+        <h2 className="font-heading text-3xl font-black uppercase tracking-tighter text-white">
           Media
         </h2>
         {isOwnProfile && !showForm && (
           <button
             onClick={() => setShowForm(true)}
-            className="bg-white border border-zinc-200 text-zinc-700 hover:border-accent-red hover:text-accent-red font-heading uppercase rounded-lg px-4 py-2 text-sm transition-colors"
+            className="bg-bg-dark-elevated border border-white/10 text-zinc-400 hover:border-accent-red hover:text-accent-red font-heading uppercase rounded-lg px-4 py-2 text-sm transition-colors"
           >
             Add Media
           </button>
@@ -57,28 +57,28 @@ export function MediaShowcase({ media, isOwnProfile }: MediaShowcaseProps) {
 
       {/* Add media form */}
       {showForm && (
-        <div className="bg-white rounded-xl border border-zinc-200 shadow-sm p-4 mb-6 space-y-3">
+        <div className="bg-bg-dark-elevated rounded-xl border border-white/10 p-4 mb-6 space-y-3">
           <form action={handleAdd} className="space-y-3">
             <input
               name="url"
               type="url"
               placeholder="Paste a YouTube, Instagram, or TikTok URL"
               required
-              className="w-full border border-zinc-200 bg-white rounded-lg px-4 py-3 text-sm focus:border-accent-red focus:outline-none"
+              className="w-full border border-white/10 bg-bg-dark-elevated text-white rounded-lg px-4 py-3 text-sm focus:border-accent-red focus:outline-none placeholder:text-zinc-500"
             />
             <input
               name="title"
               type="text"
               placeholder="Caption (optional)"
               maxLength={100}
-              className="w-full border border-zinc-200 bg-white rounded-lg px-4 py-3 text-sm focus:border-accent-red focus:outline-none"
+              className="w-full border border-white/10 bg-bg-dark-elevated text-white rounded-lg px-4 py-3 text-sm focus:border-accent-red focus:outline-none placeholder:text-zinc-500"
             />
-            {error && <p className="text-sm text-semantic-error">{error}</p>}
+            {error && <p className="text-sm text-red-500">{error}</p>}
             <div className="flex justify-end gap-2">
               <button
                 type="button"
                 onClick={() => { setShowForm(false); setError(null); }}
-                className="px-4 py-2 text-sm font-heading uppercase text-zinc-500 hover:text-zinc-700 transition-colors"
+                className="px-4 py-2 text-sm font-heading uppercase text-zinc-500 hover:text-zinc-300 transition-colors"
               >
                 Cancel
               </button>
@@ -102,16 +102,16 @@ export function MediaShowcase({ media, isOwnProfile }: MediaShowcaseProps) {
       {media.length > 0 ? (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {media.map((item, index) => (
-            <div key={mediaKey(item, index)} className="relative bg-white rounded-xl overflow-hidden shadow-sm border border-zinc-200 hover:shadow-xl transition-all">
+            <div key={mediaKey(item, index)} className="relative bg-bg-dark-elevated rounded-xl overflow-hidden border border-white/10 hover:border-white/20 transition-all">
               <MediaEmbed media={item} />
               {item.title && (
-                <p className="px-3 py-2 text-xs text-zinc-600 truncate">{item.title}</p>
+                <p className="px-3 py-2 text-xs text-zinc-300 truncate">{item.title}</p>
               )}
               {isOwnProfile && (
                 <button
                   onClick={() => handleRemove(item.id)}
                   disabled={isPending}
-                  className="absolute top-2 right-2 bg-white/80 rounded-sm text-zinc-500 hover:text-semantic-error px-2 py-1 text-xs transition-colors"
+                  className="absolute top-2 right-2 bg-black/60 rounded-sm text-zinc-500 hover:text-red-500 px-2 py-1 text-xs transition-colors"
                   title="Remove"
                 >
                   ✕
@@ -121,7 +121,7 @@ export function MediaShowcase({ media, isOwnProfile }: MediaShowcaseProps) {
           ))}
         </div>
       ) : isOwnProfile ? (
-        <div className="bg-white rounded-xl border border-zinc-200 shadow-sm p-8 text-center">
+        <div className="bg-bg-dark-elevated rounded-xl border border-white/10 p-8 text-center">
           <p className="text-zinc-500 text-sm">
             Showcase your training footage, competition highlights, and more.
           </p>

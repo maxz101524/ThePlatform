@@ -2,13 +2,14 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import { normalizeInstagramPermalink } from "@/lib/instagram-url";
 
 /** Detect platform from URL */
 function detectPlatform(url: string): string | null {
   try {
     const hostname = new URL(url).hostname.replace("www.", "");
     if (hostname.includes("youtube.com") || hostname.includes("youtu.be")) return "youtube";
-    if (hostname.includes("instagram.com")) return "instagram";
+    if (hostname.includes("instagram.com") || hostname.includes("instagr.am")) return "instagram";
     if (hostname.includes("tiktok.com")) return "tiktok";
     if (hostname.includes("twitter.com") || hostname.includes("x.com")) return "twitter";
     return null;
@@ -35,6 +36,18 @@ export async function addProfileMedia(
     return { error: "Supported platforms: YouTube, Instagram, TikTok, X/Twitter" };
   }
 
+  let storedUrl = url;
+  if (platform === "instagram") {
+    const normalized = normalizeInstagramPermalink(url);
+    if (!normalized) {
+      return {
+        error:
+          "Could not read that Instagram link. Open the post → ⋯ → Copy link, or use a URL like instagram.com/reel/… or instagram.com/p/…",
+      };
+    }
+    storedUrl = normalized;
+  }
+
   // Get current max sort_order
   const { data: existing } = await supabase
     .from("profile_media")
@@ -57,7 +70,7 @@ export async function addProfileMedia(
 
   const { error } = await supabase.from("profile_media").insert({
     profile_id: user.id,
-    url,
+    url: storedUrl,
     platform,
     title,
     sort_order: nextOrder,
