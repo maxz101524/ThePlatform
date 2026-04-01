@@ -44,3 +44,7 @@ supabase/.temp/
 
 # OPL data (too large for git)
 opl-data/
+
+# Local IDE / AI configs
+.claude/
+.cursor/

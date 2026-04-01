@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import type { UserProfile, UserResult, Post } from "@/lib/types";
+import type { UserProfile, UserResult, Post, ProfileMedia } from "@/lib/types";
 
 export async function getProfileByUsername(
   username: string
@@ -37,11 +37,28 @@ export async function getUserPosts(
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("posts")
-    .select("*, profiles(username, avatar_url, display_name)")
+    .select("*, profiles!posts_user_id_fkey(username, avatar_url, display_name)")
     .eq("user_id", profileId)
     .order("created_at", { ascending: false })
     .range(offset, offset + limit - 1);
 
   if (error) return [];
   return (data as Post[]) || [];
+}
+
+export async function getProfileMedia(
+  profileId: string
+): Promise<ProfileMedia[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("profile_media")
+    .select("*")
+    .eq("profile_id", profileId)
+    .order("sort_order", { ascending: true });
+
+  if (error) {
+    console.error("[getProfileMedia]", error.message);
+    return [];
+  }
+  return (data as ProfileMedia[]) || [];
 }

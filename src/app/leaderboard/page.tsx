@@ -37,38 +37,40 @@ export default async function LeaderboardPage({ searchParams }: Props) {
   const tableStartRank = showPodium ? 3 : offset;
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div>
-        <h1 className="font-heading text-5xl font-bold uppercase text-text-primary md:text-6xl">
-          Global Rankings
-        </h1>
-      </div>
-
-      {/* Filters */}
-      <Suspense fallback={null}>
-        <LeaderboardFilters weightClasses={weightClasses} />
-      </Suspense>
-
-      {/* Podium — top 3 on first page */}
-      {showPodium && <Podium entries={podiumEntries} />}
-
-      {/* Table — ranks 4+ (or all ranks on subsequent pages) */}
-      <Suspense fallback={<TableSkeleton rows={20} />}>
-        <LeaderboardTable entries={tableEntries} sortBy={sortBy} startRank={tableStartRank} />
-      </Suspense>
-
-      {/* Load More */}
-      {entries.length === 50 && (
-        <div className="flex justify-center">
-          <a
-            href={`/leaderboard?${new URLSearchParams({ ...Object.fromEntries(Object.entries(params).filter(([, v]) => v !== undefined)) as Record<string, string>, offset: String(offset + 50) }).toString()}`}
-            className="border border-border px-6 py-2 font-heading text-sm uppercase tracking-wider text-text-muted hover:border-text-muted hover:text-text-primary transition-colors"
-          >
-            Load More
-          </a>
+    <div className="bg-bg-dark min-h-screen -mx-4 -mt-4 pb-20 md:pb-6">
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-12 space-y-8">
+        {/* Header */}
+        <div>
+          <h1 className="font-heading text-5xl font-bold uppercase text-white md:text-6xl">
+            Global Rankings
+          </h1>
         </div>
-      )}
+
+        {/* Filters */}
+        <Suspense fallback={null}>
+          <LeaderboardFilters weightClasses={weightClasses} />
+        </Suspense>
+
+        {/* Podium — top 3 on first page */}
+        {showPodium && <Podium entries={podiumEntries} />}
+
+        {/* Table — ranks 4+ (or all ranks on subsequent pages) */}
+        <Suspense fallback={<TableSkeleton rows={20} />}>
+          <LeaderboardTable entries={tableEntries} sortBy={sortBy} startRank={tableStartRank} />
+        </Suspense>
+
+        {/* Load More */}
+        {entries.length === 50 && (
+          <div className="flex justify-center">
+            <a
+              href={`/leaderboard?${new URLSearchParams({ ...Object.fromEntries(Object.entries(params).filter(([, v]) => v !== undefined)) as Record<string, string>, offset: String(offset + 50) }).toString()}`}
+              className="border border-white/10 rounded-md px-6 py-2 font-heading text-sm uppercase tracking-wider text-text-on-dark-muted hover:border-zinc-500 hover:text-white transition-colors"
+            >
+              Load More
+            </a>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

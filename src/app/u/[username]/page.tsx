@@ -1,24 +1,44 @@
 import { notFound } from "next/navigation";
-import { getProfileByUsername, getUserResults, getUserPosts } from "@/lib/queries/profile";
+import { getProfileByUsername, getUserResults, getUserPosts, getProfileMedia } from "@/lib/queries/profile";
 import { isFollowing } from "@/lib/queries/follow";
 import { getUser } from "@/lib/auth";
+import { ProfileHeader } from "@/components/profile/profile-header";
 import { StatsBar } from "@/components/profile/stats-bar";
+import { MediaShowcase } from "@/components/profile/media-showcase";
 import { CompetitionHistory } from "@/components/profile/competition-history";
-import { FollowButton } from "@/components/profile/follow-button";
 import { PostCard } from "@/components/content/post-card";
+import { ProfileTabs } from "@/components/profile/profile-tabs";
+import { Suspense } from "react";
+
+export const dynamic = "force-dynamic";
+
+function postKey(
+  post: {
+    id?: string | null;
+    created_at: string;
+    body_text: string;
+    profiles: { username: string };
+  },
+  index: number,
+): string {
+  return post.id ?? `${post.profiles.username}-${post.created_at}-${post.body_text.slice(0, 24)}-${index}`;
+}
 
 interface Props {
   params: Promise<{ username: string }>;
+  searchParams: Promise<{ tab?: string }>;
 }
 
-export default async function ProfilePage({ params }: Props) {
+export default async function ProfilePage({ params, searchParams }: Props) {
   const { username } = await params;
+  const { tab = "posts" } = await searchParams;
   const profile = await getProfileByUsername(username);
   if (!profile) notFound();
 
-  const [results, posts, currentUser] = await Promise.all([
+  const [results, posts, media, currentUser] = await Promise.all([
     getUserResults(profile.id),
     getUserPosts(profile.id),
+    getProfileMedia(profile.id),
     getUser(),
   ]);
 
@@ -28,79 +48,69 @@ export default async function ProfilePage({ params }: Props) {
     : false;
 
   return (
-    <div className="space-y-6">
-      {/* Hero */}
-      <div className="flex items-start gap-4">
-        <div className="h-20 w-20 shrink-0 rounded-full bg-bg-surface border border-border flex items-center justify-center text-2xl font-heading text-text-muted uppercase">
-          {profile.avatar_url ? (
-            <img src={profile.avatar_url} alt="" className="h-20 w-20 rounded-full object-cover" />
-          ) : (
-            profile.username[0]
-          )}
-        </div>
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-3">
-            <h1 className="font-heading text-3xl font-bold uppercase text-text-primary truncate">
-              {profile.display_name || profile.username}
-            </h1>
-            {currentUser && !isOwnProfile && (
-              <FollowButton targetId={profile.id} isFollowing={userIsFollowing} />
-            )}
-          </div>
-          <p className="text-sm text-text-muted">@{profile.username}</p>
-          {profile.bio && (
-            <p className="mt-2 text-sm text-text-secondary max-w-lg">{profile.bio}</p>
-          )}
-          <div className="mt-2 flex items-center gap-4 text-xs text-text-muted">
-            <span><strong className="text-text-primary">{profile.follower_count}</strong> followers</span>
-            <span><strong className="text-text-primary">{profile.following_count}</strong> following</span>
-            {profile.instagram && (
-              <a
-                href={`https://instagram.com/${profile.instagram}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-accent-primary hover:underline"
-              >
-                @{profile.instagram}
-              </a>
-            )}
-          </div>
+    <>
+      {/* Dark Hero */}
+      <div className="-mx-4 -mt-4 bg-bg-dark pt-20 pb-16 px-6 md:px-12">
+        <div className="max-w-7xl mx-auto space-y-8">
+          <ProfileHeader
+            profile={profile}
+            isOwnProfile={isOwnProfile}
+            isFollowing={userIsFollowing}
+            isLoggedIn={!!currentUser}
+          />
+          <StatsBar profile={profile} />
         </div>
       </div>
 
-      {/* Stats */}
-      <StatsBar profile={profile} />
-
-      {/* Competition History */}
-      <div>
-        <h2 className="font-heading text-xl font-bold uppercase text-text-primary mb-3">
-          Competition History
-        </h2>
-        <CompetitionHistory results={results} />
+      {/* Tabs */}
+      <div className="-mx-4 bg-bg-dark">
+        <div className="max-w-7xl mx-auto">
+          <Suspense fallback={null}>
+            <ProfileTabs username={username} />
+          </Suspense>
+        </div>
       </div>
 
-      {/* Posts */}
-      {posts.length > 0 && (
-        <div>
-          <h2 className="font-heading text-xl font-bold uppercase text-text-primary mb-3">
-            Posts
-          </h2>
-          <div className="space-y-4">
-            {posts.map((post) => (
-              <PostCard
-                key={post.id}
-                username={post.profiles.username}
-                bodyText={post.body_text}
-                linkUrl={post.link_url}
-                linkPreview={post.link_preview}
-                voteCount={post.vote_count}
-                commentCount={post.comment_count}
-                createdAt={post.created_at}
-              />
-            ))}
-          </div>
+      {/* Tab Content */}
+      <div className="-mx-4 bg-bg-dark min-h-[400px]">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 py-12">
+          {tab === "posts" && (
+            <section>
+              {posts.length > 0 ? (
+                <div className="max-w-[600px] divide-y divide-white/10">
+                  {posts.map((post, index) => (
+                    <PostCard
+                      key={postKey(post, index)}
+                      postId={post.id}
+                      username={post.profiles.username}
+                      bodyText={post.body_text}
+                      linkUrl={post.link_url}
+                      linkPreview={post.link_preview}
+                      voteCount={post.vote_count}
+                      commentCount={post.comment_count}
+                      createdAt={post.created_at}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <p className="text-zinc-500 text-sm py-8">
+                  {isOwnProfile ? "You haven't posted anything yet." : "No posts yet."}
+                </p>
+              )}
+            </section>
+          )}
+
+          {tab === "media" && (
+            <MediaShowcase media={media} isOwnProfile={isOwnProfile} />
+          )}
+
+          {tab === "competition" && (
+            <section>
+              <CompetitionHistory results={results} />
+            </section>
+          )}
         </div>
-      )}
-    </div>
+      </div>
+    </>
   );
 }

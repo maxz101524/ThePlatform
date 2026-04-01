@@ -72,6 +72,17 @@ export interface UserResult {
   place: string | null;
 }
 
+// Profile media
+export interface ProfileMedia {
+  id: string;
+  profile_id: string;
+  url: string;
+  platform: string;
+  title: string | null;
+  sort_order: number;
+  created_at: string;
+}
+
 // Feed
 export interface Post {
   id: string;
@@ -87,6 +98,21 @@ export interface Post {
   tag: string | null;
   vote_count: number;
   comment_count: number;
+  created_at: string;
+  profiles: {
+    username: string;
+    avatar_url: string | null;
+    display_name: string | null;
+  };
+}
+
+export interface Comment {
+  id: string;
+  post_id: string;
+  user_id: string;
+  parent_comment_id: string | null;
+  body_text: string;
+  vote_count: number;
   created_at: string;
   profiles: {
     username: string;

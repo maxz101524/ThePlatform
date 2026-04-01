@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Platform - Global Rankings</title>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#fa5a29",
+                        "background-light": "#f8f6f5",
+                        "background-dark": "#161618",
+                        "surface": "#232326",
+                        "text-primary": "#EBEBEB",
+                        "text-muted": "#85858B",
+                        "accent-brass": "#FFC107"
+                    },
+                    fontFamily: {
+                        "display": ["Public Sans", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0px", "sm": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" },
+                },
+            },
+        }
+    </script>
+<style>
+        .tabular-nums {
+            font-variant-numeric: tabular-nums;
+        }
+        
+        /* Hide scrollbar for clean brutalist look in filters */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-text-primary font-display min-h-screen flex flex-col antialiased selection:bg-primary selection:text-white">
+<!-- Top Navigation (Shared Component) -->
+<div class="relative flex h-auto w-full flex-col bg-surface overflow-x-hidden border-b border-text-muted/30">
+<div class="layout-container flex h-full grow flex-col">
+<div class="px-4 md:px-10 lg:px-40 flex flex-1 justify-center py-4">
+<div class="layout-content-container flex flex-col w-full max-w-7xl flex-1">
+<header class="flex items-center justify-between whitespace-nowrap px-2 md:px-0 py-2">
+<div class="flex items-center gap-4 text-text-primary">
+<div class="size-6 text-primary">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M39.475 21.6262C40.358 21.4363 40.6863 21.5589 40.7581 21.5934C40.7876 21.655 40.8547 21.857 40.8082 22.3336C40.7408 23.0255 40.4502 24.0046 39.8572 25.2301C38.6799 27.6631 36.5085 30.6631 33.5858 33.5858C30.6631 36.5085 27.6632 38.6799 25.2301 39.8572C24.0046 40.4502 23.0255 40.7407 22.3336 40.8082C21.8571 40.8547 21.6551 40.7875 21.5934 40.7581C21.5589 40.6863 21.4363 40.358 21.6262 39.475C21.8562 38.4054 22.4689 36.9657 23.5038 35.2817C24.7575 33.2417 26.5497 30.9744 28.7621 28.762C30.9744 26.5497 33.2417 24.7574 35.2817 23.5037C36.9657 22.4689 38.4054 21.8562 39.475 21.6262ZM4.41189 29.2403L18.7597 43.5881C19.8813 44.7097 21.4027 44.9179 22.7217 44.7893C24.0585 44.659 25.5148 44.1631 26.9723 43.4579C29.9052 42.0387 33.2618 39.5667 36.4142 36.4142C39.5667 33.2618 42.0387 29.9052 43.4579 26.9723C44.1631 25.5148 44.659 24.0585 44.7893 22.7217C44.9179 21.4027 44.7097 19.8813 43.5881 18.7597L29.2403 4.41187C27.8527 3.02428 25.8765 3.02573 24.2861 3.36776C22.6081 3.72863 20.7334 4.58419 18.8396 5.74801C16.4978 7.18716 13.9881 9.18353 11.5858 11.5858C9.18354 13.988 7.18717 16.4978 5.74802 18.8396C4.58421 20.7334 3.72865 22.6081 3.36778 24.2861C3.02574 25.8765 3.02429 27.8527 4.41189 29.2403Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+<h2 class="text-text-primary text-xl font-bold leading-tight tracking-tight uppercase">The Platform</h2>
+</div>
+<nav class="hidden md:flex gap-6 text-sm font-bold uppercase tracking-wider text-text-muted">
+<a class="hover:text-primary transition-colors" href="#">The Feed</a>
+<a class="text-text-primary border-b-2 border-primary pb-1" href="#">Leaderboard</a>
+<a class="hover:text-primary transition-colors" href="#">Meet Hub</a>
+</nav>
+<button class="md:hidden text-text-primary">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+</header>
+</div>
+</div>
+</div>
+</div>
+<!-- Main Content -->
+<main class="flex-1 w-full max-w-7xl mx-auto px-4 md:px-10 lg:px-40 py-8 flex flex-col gap-6">
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-2">
+<div>
+<h1 class="text-5xl md:text-7xl font-black uppercase tracking-tighter text-text-primary leading-none">Global Rankings</h1>
+<p class="text-text-muted text-sm mt-2 font-bold uppercase tracking-widest">Top Totals &amp; DOTS Scores</p>
+</div>
+<!-- Quick Search -->
+<div class="relative w-full md:w-64">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-sm" data-icon="search">search</span>
+<input class="w-full bg-surface border border-text-muted/30 text-text-primary pl-9 pr-4 py-2 text-sm uppercase font-bold placeholder:text-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors rounded-sm" placeholder="FIND LIFTER..." type="text"/>
+</div>
+</div>
+<!-- Sticky Filter Matrix -->
+<div class="sticky top-0 z-20 bg-background-dark/95 backdrop-blur-sm border-y border-text-muted/30 py-3 -mx-4 px-4 md:mx-0 md:px-0">
+<div class="flex gap-3 overflow-x-auto no-scrollbar pb-1">
+<!-- Filter Selects -->
+<div class="relative min-w-[140px] shrink-0 group">
+<select class="w-full appearance-none bg-surface border border-text-muted/50 text-text-primary px-3 py-2 text-sm uppercase font-bold focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary rounded-sm cursor-pointer hover:border-text-muted transition-colors">
+<option>Federation: ALL</option>
+<option>IPF</option>
+<option>USAPL</option>
+<option>WRPF</option>
+<option>USPA</option>
+</select>
+<span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none text-sm group-hover:text-text-primary transition-colors" data-icon="keyboard_arrow_down">keyboard_arrow_down</span>
+</div>
+<div class="relative min-w-[120px] shrink-0 group">
+<select class="w-full appearance-none bg-surface border border-text-muted/50 text-text-primary px-3 py-2 text-sm uppercase font-bold focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary rounded-sm cursor-pointer hover:border-text-muted transition-colors">
+<option>Sex: M</option>
+<option>Sex: F</option>
+<option>Sex: MX</option>
+</select>
+<span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none text-sm group-hover:text-text-primary transition-colors" data-icon="keyboard_arrow_down">keyboard_arrow_down</span>
+</div>
+<div class="relative min-w-[160px] shrink-0 group">
+<select class="w-full appearance-none bg-surface border border-text-muted/50 text-text-primary px-3 py-2 text-sm uppercase font-bold focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary rounded-sm cursor-pointer hover:border-text-muted transition-colors">
+<option>Class: ALL</option>
+<option>-59kg</option>
+<option>-66kg</option>
+<option>-74kg</option>
+<option>-83kg</option>
+<option>-93kg</option>
+<option>-105kg</option>
+<option>-120kg</option>
+<option>120kg+</option>
+</select>
+<span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none text-sm group-hover:text-text-primary transition-colors" data-icon="keyboard_arrow_down">keyboard_arrow_down</span>
+</div>
+<div class="relative min-w-[140px] shrink-0 group">
+<select class="w-full appearance-none bg-surface border border-text-muted/50 text-text-primary px-3 py-2 text-sm uppercase font-bold focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary rounded-sm cursor-pointer hover:border-text-muted transition-colors">
+<option>Equip: RAW</option>
+<option>WRAPS</option>
+<option>SINGLE PLY</option>
+<option>MULTI PLY</option>
+</select>
+<span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none text-sm group-hover:text-text-primary transition-colors" data-icon="keyboard_arrow_down">keyboard_arrow_down</span>
+</div>
+<div class="relative min-w-[120px] shrink-0 group">
+<select class="w-full appearance-none bg-surface border border-text-muted/50 text-text-primary px-3 py-2 text-sm uppercase font-bold focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary rounded-sm cursor-pointer hover:border-text-muted transition-colors">
+<option>Year: ALL</option>
+<option>2024</option>
+<option>2023</option>
+<option>2022</option>
+</select>
+<span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none text-sm group-hover:text-text-primary transition-colors" data-icon="keyboard_arrow_down">keyboard_arrow_down</span>
+</div>
+<button class="ml-auto bg-primary hover:bg-primary/80 text-white px-4 py-2 text-sm uppercase font-bold rounded-sm shrink-0 transition-colors hidden md:block">
+                    Apply Filters
+                </button>
+</div>
+</div>
+<!-- Desktop/Tablet Table View (Hidden on Mobile) -->
+<div class="hidden md:block w-full overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b-2 border-text-muted text-xs uppercase font-black text-text-muted tracking-widest">
+<th class="py-4 px-4 w-16 text-center">Rank</th>
+<th class="py-4 px-4">Lifter</th>
+<th class="py-4 px-4 text-right hidden lg:table-cell">BW</th>
+<th class="py-4 px-4 text-right">Squat</th>
+<th class="py-4 px-4 text-right">Bench</th>
+<th class="py-4 px-4 text-right">Deadlift</th>
+<th class="py-4 px-4 text-right text-text-primary">Total</th>
+<th class="py-4 px-4 text-right text-text-primary">DOTS</th>
+<th class="py-4 px-2 w-10"></th> <!-- Action Column -->
+</tr>
+</thead>
+<tbody class="text-sm font-bold">
+<!-- Rank 1 (Brass) -->
+<tr class="border-b border-text-muted/20 hover:bg-surface transition-colors group relative cursor-pointer">
+<td class="py-4 px-4 text-center text-accent-brass font-black text-lg">1</td>
+<td class="py-4 px-4 text-accent-brass uppercase text-base">Jesus Olivares</td>
+<td class="py-4 px-4 text-right text-text-muted tabular-nums hidden lg:table-cell">178.5</td>
+<td class="py-4 px-4 text-right tabular-nums">470.0</td>
+<td class="py-4 px-4 text-right tabular-nums">272.5</td>
+<td class="py-4 px-4 text-right tabular-nums">410.0</td>
+<td class="py-4 px-4 text-right text-accent-brass font-black tabular-nums text-base">1152.5</td>
+<td class="py-4 px-4 text-right text-accent-brass font-black tabular-nums">611.53</td>
+<td class="py-4 px-2 text-right">
+<button class="opacity-0 group-hover:opacity-100 bg-surface border border-text-muted text-text-primary px-3 py-1 text-xs uppercase hover:bg-primary hover:text-white hover:border-primary transition-all rounded-sm whitespace-nowrap">View Dossier</button>
+</td>
+</tr>
+<!-- Rank 2 (Chalk White) -->
+<tr class="border-b border-text-muted/20 hover:bg-surface transition-colors group relative cursor-pointer">
+<td class="py-4 px-4 text-center text-text-primary font-black text-lg">2</td>
+<td class="py-4 px-4 text-text-primary uppercase text-base">Ray Williams</td>
+<td class="py-4 px-4 text-right text-text-muted tabular-nums hidden lg:table-cell">188.9</td>
+<td class="py-4 px-4 text-right tabular-nums">477.5</td>
+<td class="py-4 px-4 text-right tabular-nums">242.5</td>
+<td class="py-4 px-4 text-right tabular-nums">392.5</td>
+<td class="py-4 px-4 text-right text-text-primary font-black tabular-nums text-base">1112.5</td>
+<td class="py-4 px-4 text-right text-text-primary font-black tabular-nums">582.41</td>
+<td class="py-4 px-2 text-right">
+<button class="opacity-0 group-hover:opacity-100 bg-surface border border-text-muted text-text-primary px-3 py-1 text-xs uppercase hover:bg-primary hover:text-white hover:border-primary transition-all rounded-sm whitespace-nowrap">View Dossier</button>
+</td>
+</tr>
+<!-- Rank 3 (Primary/Rusted Iron) -->
+<tr class="border-b border-text-muted/20 hover:bg-surface transition-colors group relative cursor-pointer">
+<td class="py-4 px-4 text-center text-primary font-black text-lg">3</td>
+<td class="py-4 px-4 text-primary uppercase text-base">Craig Foster</td>
+<td class="py-4 px-4 text-right text-text-muted tabular-nums hidden lg:table-cell">165.2</td>
+<td class="py-4 px-4 text-right tabular-nums">410.0</td>
+<td class="py-4 px-4 text-right tabular-nums">255.0</td>
+<td class="py-4 px-4 text-right tabular-nums">395.0</td>
+<td class="py-4 px-4 text-right text-primary font-black tabular-nums text-base">1060.0</td>
+<td class="py-4 px-4 text-right text-primary font-black tabular-nums">565.80</td>
+<td class="py-4 px-2 text-right">
+<button class="opacity-0 group-hover:opacity-100 bg-surface border border-text-muted text-text-primary px-3 py-1 text-xs uppercase hover:bg-primary hover:text-white hover:border-primary transition-all rounded-sm whitespace-nowrap">View Dossier</button>
+</td>
+</tr>
+<!-- Ranks 4+ (Standard Styling) -->
+<tr class="border-b border-text-muted/20 hover:bg-surface transition-colors group relative cursor-pointer text-text-muted">
+<td class="py-4 px-4 text-center font-bold">4</td>
+<td class="py-4 px-4 uppercase text-text-primary">Daniel Bell</td>
+<td class="py-4 px-4 text-right tabular-nums hidden lg:table-cell">170.5</td>
+<td class="py-4 px-4 text-right tabular-nums">412.5</td>
+<td class="py-4 px-4 text-right tabular-nums">250.0</td>
+<td class="py-4 px-4 text-right tabular-nums">385.0</td>
+<td class="py-4 px-4 text-right text-text-primary font-black tabular-nums text-base">1047.5</td>
+<td class="py-4 px-4 text-right text-text-primary font-black tabular-nums">556.12</td>
+<td class="py-4 px-2 text-right">
+<button class="opacity-0 group-hover:opacity-100 bg-surface border border-text-muted text-text-primary px-3 py-1 text-xs uppercase hover:bg-primary hover:text-white hover:border-primary transition-all rounded-sm whitespace-nowrap">View Dossier</button>
+</td>
+</tr>
+<tr class="border-b border-text-muted/20 hover:bg-surface transition-colors group relative cursor-pointer text-text-muted">
+<td class="py-4 px-4 text-center font-bold">5</td>
+<td class="py-4 px-4 uppercase text-text-primary">Ashton Rouska</td>
+<td class="py-4 px-4 text-right tabular-nums hidden lg:table-cell">104.5</td>
+<td class="py-4 px-4 text-right tabular-nums">380.0</td>
+<td class="py-4 px-4 text-right tabular-nums">215.0</td>
+<td class="py-4 px-4 text-right tabular-nums">385.0</td>
+<td class="py-4 px-4 text-right text-text-primary font-black tabular-nums text-base">980.0</td>
+<td class="py-4 px-4 text-right text-text-primary font-black tabular-nums">555.45</td>
+<td class="py-4 px-2 text-right">
+<button class="opacity-0 group-hover:opacity-100 bg-surface border border-text-muted text-text-primary px-3 py-1 text-xs uppercase hover:bg-primary hover:text-white hover:border-primary transition-all rounded-sm whitespace-nowrap">View Dossier</button>
+</td>
+</tr>
+</tbody>
+</table>
+<!-- Load More / Pagination -->
+<div class="mt-8 flex justify-center">
+<button class="bg-surface border border-text-muted/50 text-text-primary px-8 py-3 text-sm uppercase font-bold hover:border-primary hover:text-primary transition-colors rounded-sm flex items-center gap-2">
+                    Load More Entries <span class="material-symbols-outlined text-sm" data-icon="expand_more">expand_more</span>
+</button>
+</div>
+</div>
+<!-- Mobile Card View (Visible only on small screens) -->
+<div class="md:hidden flex flex-col gap-4">
+<!-- Rank 1 Card -->
+<div class="bg-surface border border-accent-brass p-4 rounded-sm relative flex flex-col gap-3">
+<div class="absolute top-0 right-0 bg-accent-brass text-background-dark font-black px-3 py-1 text-lg rounded-bl-sm">#1</div>
+<div>
+<h3 class="text-xl font-black uppercase text-accent-brass">Jesus Olivares</h3>
+<p class="text-text-muted text-xs uppercase font-bold">BW: 178.5kg | IPF</p>
+</div>
+<div class="grid grid-cols-3 gap-2 py-2 border-y border-text-muted/20">
+<div class="flex flex-col">
+<span class="text-[10px] text-text-muted uppercase font-bold tracking-wider">Squat</span>
+<span class="font-bold tabular-nums">470.0</span>
+</div>
+<div class="flex flex-col text-center">
+<span class="text-[10px] text-text-muted uppercase font-bold tracking-wider">Bench</span>
+<span class="font-bold tabular-nums">272.5</span>
+</div>
+<div class="flex flex-col text-right">
+<span class="text-[10px] text-text-muted uppercase font-bold tracking-wider">Deadlift</span>
+<span class="font-bold tabular-nums">410.0</span>
+</div>
+</div>
+<div class="flex justify-between items-end">
+<div class="flex flex-col">
+<span class="text-[10px] text-accent-brass uppercase font-bold tracking-wider">Total</span>
+<span class="text-2xl font-black text-accent-brass tabular-nums leading-none">1152.5</span>
+</div>
+<div class="flex flex-col text-right">
+<span class="text-[10px] text-accent-brass uppercase font-bold tracking-wider">DOTS</span>
+<span class="font-bold text-accent-brass tabular-nums">611.53</span>
+</div>
+</div>
+</div>
+<!-- Rank 2 Card -->
+<div class="bg-surface border border-text-primary p-4 rounded-sm relative flex flex-col gap-3">
+<div class="absolute top-0 right-0 bg-text-primary text-background-dark font-black px-3 py-1 text-lg rounded-bl-sm">#2</div>
+<div>
+<h3 class="text-xl font-black uppercase text-text-primary">Ray Williams</h3>
+<p class="text-text-muted text-xs uppercase font-bold">BW: 188.9kg | USAPL</p>
+</div>
+<div class="grid grid-cols-3 gap-2 py-2 border-y border-text-muted/20">
+<div class="flex flex-col">
+<span class="text-[10px] text-text-muted uppercase font-bold tracking-wider">Squat</span>
+<span class="font-bold tabular-nums">477.5</span>
+</div>
+<div class="flex flex-col text-center">
+<span class="text-[10px] text-text-muted uppercase font-bold tracking-wider">Bench</span>
+<span class="font-bold tabular-nums">242.5</span>
+</div>
+<div class="flex flex-col text-right">
+<span class="text-[10px] text-text-muted uppercase font-bold tracking-wider">Deadlift</span>
+<span class="font-bold tabular-nums">392.5</span>
+</div>
+</div>
+<div class="flex justify-between items-end">
+<div class="flex flex-col">
+<span class="text-[10px] text-text-primary uppercase font-bold tracking-wider">Total</span>
+<span class="text-2xl font-black text-text-primary tabular-nums leading-none">1112.5</span>
+</div>
+<div class="flex flex-col text-right">
+<span class="text-[10px] text-text-primary uppercase font-bold tracking-wider">DOTS</span>
+<span class="font-bold text-text-primary tabular-nums">582.41</span>
+</div>
+</div>
+</div>
+<!-- Rank 3 Card -->
+<div class="bg-surface border border-primary p-4 rounded-sm relative flex flex-col gap-3">
+<div class="absolute top-0 right-0 bg-primary text-white font-black px-3 py-1 text-lg rounded-bl-sm">#3</div>
+<div>
+<h3 class="text-xl font-black uppercase text-primary">Craig Foster</h3>
+<p class="text-text-muted text-xs uppercase font-bold">BW: 165.2kg | WRPF</p>
+</div>
+<div class="grid grid-cols-3 gap-2 py-2 border-y border-text-muted/20">
+<div class="flex flex-col">
+<span class="text-[10px] text-text-muted uppercase font-bold tracking-wider">Squat</span>
+<span class="font-bold tabular-nums">410.0</span>
+</div>
+<div class="flex flex-col text-center">
+<span class="text-[10px] text-text-muted uppercase font-bold tracking-wider">Bench</span>
+<span class="font-bold tabular-nums">255.0</span>
+</div>
+<div class="flex flex-col text-right">
+<span class="text-[10px] text-text-muted uppercase font-bold tracking-wider">Deadlift</span>
+<span class="font-bold tabular-nums">395.0</span>
+</div>
+</div>
+<div class="flex justify-between items-end">
+<div class="flex flex-col">
+<span class="text-[10px] text-primary uppercase font-bold tracking-wider">Total</span>
+<span class="text-2xl font-black text-primary tabular-nums leading-none">1060.0</span>
+</div>
+<div class="flex flex-col text-right">
+<span class="text-[10px] text-primary uppercase font-bold tracking-wider">DOTS</span>
+<span class="font-bold text-primary tabular-nums">565.80</span>
+</div>
+</div>
+</div>
+<!-- Rank 4+ Card -->
+<div class="bg-surface border border-text-muted/30 p-4 rounded-sm relative flex flex-col gap-3">
+<div class="absolute top-0 right-0 bg-text-muted/30 text-text-muted font-black px-3 py-1 text-sm rounded-bl-sm">#4</div>
+<div>
+<h3 class="text-lg font-black uppercase text-text-primary">Daniel Bell</h3>
+<p class="text-text-muted text-xs uppercase font-bold">BW: 170.5kg | WRPF</p>
+</div>
+<div class="flex justify-between items-end pt-2 border-t border-text-muted/20">
+<div class="flex flex-col">
+<span class="text-[10px] text-text-primary uppercase font-bold tracking-wider">Total</span>
+<span class="text-xl font-black text-text-primary tabular-nums leading-none">1047.5</span>
+</div>
+<div class="flex flex-col text-right">
+<span class="text-[10px] text-text-primary uppercase font-bold tracking-wider">DOTS</span>
+<span class="font-bold text-text-primary tabular-nums">556.12</span>
+</div>
+</div>
+</div>
+<button class="bg-surface border border-text-muted/50 text-text-primary px-8 py-3 mt-4 text-sm uppercase font-bold hover:border-primary hover:text-primary transition-colors rounded-sm flex items-center justify-center gap-2 w-full">
+                Load More <span class="material-symbols-outlined text-sm" data-icon="expand_more">expand_more</span>
+</button>
+</div>
+</main>
+</body></html>

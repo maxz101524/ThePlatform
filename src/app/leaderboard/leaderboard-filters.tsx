@@ -2,7 +2,6 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback } from "react";
-import { Button } from "@/components/ui/button";
 
 const FEDERATIONS = ["All", "IPF", "USAPL", "USPA", "SPF", "WRPF", "RPS", "APF", "WPC"];
 const EQUIPMENT = ["All", "Raw", "Wraps", "Single-ply", "Multi-ply"];
@@ -49,7 +48,6 @@ export function LeaderboardFilters({ weightClasses = [] }: LeaderboardFiltersPro
     [router, searchParams]
   );
 
-  // Build dynamic subtitle from active filters
   const subtitle = [
     currentSex === "F" ? "Women" : "Men",
     currentEquip !== "All" ? currentEquip : null,
@@ -60,13 +58,13 @@ export function LeaderboardFilters({ weightClasses = [] }: LeaderboardFiltersPro
     .filter(Boolean)
     .join(" · ");
 
+  const hasActiveFilters = currentFed !== "All" || currentEquip !== "All" || currentTested !== "" || currentClass !== "All" || currentSex !== "M";
+
   return (
     <div>
-      {/* Dynamic subtitle */}
-      <p className="mb-4 text-sm text-text-muted">{subtitle}</p>
+      <p className="mb-4 text-sm text-text-on-dark-muted">{subtitle}</p>
 
-      {/* Filters */}
-      <div className="flex flex-wrap items-end gap-3 bg-bg-surface p-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3 mb-8">
         <FilterSelect label="Federation" value={currentFed} options={FEDERATIONS} onChange={(v) => updateFilter("fed", v)} />
         <FilterSelect label="Sex" value={currentSex} options={["M", "F"]} onChange={(v) => updateFilter("sex", v)} />
         <FilterSelect label="Equipment" value={currentEquip} options={EQUIPMENT} onChange={(v) => updateFilter("equip", v)} />
@@ -93,9 +91,19 @@ export function LeaderboardFilters({ weightClasses = [] }: LeaderboardFiltersPro
           labels={SORT_OPTIONS.map((s) => s.label)}
           onChange={(v) => updateFilter("sort", v)}
         />
-        <Button variant="primary" size="sm" onClick={() => router.push("/leaderboard")}>
-          Reset
-        </Button>
+        <div className="flex flex-col justify-end">
+          <button
+            onClick={() => router.push("/leaderboard")}
+            className={`py-3 px-4 rounded-lg font-heading text-xs uppercase tracking-widest transition-colors ${
+              hasActiveFilters
+                ? "bg-bg-dark-elevated text-white hover:bg-bg-dark-subtle"
+                : "bg-bg-dark-elevated text-zinc-600 cursor-default"
+            }`}
+            disabled={!hasActiveFilters}
+          >
+            Reset
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -115,21 +123,34 @@ function FilterSelect({
   onChange: (v: string) => void;
 }) {
   return (
-    <div className="flex flex-col gap-1">
-      <label className="text-xs font-heading uppercase tracking-wider text-text-muted">
+    <div className="space-y-1.5">
+      <label className="block font-heading uppercase text-[10px] font-bold tracking-widest text-zinc-500">
         {label}
       </label>
-      <select
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="h-9 border border-border bg-bg-primary px-3 text-sm text-text-primary focus:border-accent-primary focus:outline-none"
-      >
-        {options.map((opt, i) => (
-          <option key={opt} value={opt}>
-            {labels ? labels[i] : opt}
-          </option>
-        ))}
-      </select>
+      <div className="relative">
+        <select
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="w-full appearance-none bg-bg-dark-elevated border border-white/10 text-text-on-dark font-heading font-semibold text-xs rounded-lg focus:ring-1 focus:ring-accent-red focus:border-accent-red py-3 pl-3 pr-8 cursor-pointer"
+        >
+          {options.map((opt, i) => (
+            <option key={opt} value={opt}>
+              {labels ? labels[i] : opt}
+            </option>
+          ))}
+        </select>
+        <svg
+          className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500 pointer-events-none"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
+      </div>
     </div>
   );
 }
